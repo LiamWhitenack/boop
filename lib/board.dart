@@ -192,11 +192,23 @@ class Board {
     return allCoordinates;
   }
 
-  Player? checkForWin() {
-    // List<List<List<int>>> allThreeInARows = findAllThreeInARow();
-    // for (List<List<int>> threeInARow in allThreeInARows) {
-    //   if
-    // }
-    return null;
+  bool checkForWin(Player player) {
+    int numberOfCatsInARow = 0;
+    List<List<List<int>>> allThreeInARowCoordinates = findAllThreeInARow();
+    for (List<List<int>> threeInARowCoordinates in allThreeInARowCoordinates) {
+      for (List<int> coordinate in threeInARowCoordinates) {
+        int row = coordinate[0];
+        int column = coordinate[1];
+        if (tempGrid[row][column] is Cat) {
+          if (tempGrid[row][column].player == player) {
+            numberOfCatsInARow++;
+          }
+        }
+        if (numberOfCatsInARow == 3) {
+          return true;
+        }
+      }
+    }
+    return false;
   }
 }
