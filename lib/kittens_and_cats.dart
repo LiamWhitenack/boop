@@ -2,11 +2,11 @@
 import 'package:boop/player.dart';
 
 class Kitten {
-  final Player owner;
-  Kitten(this.owner);
+  final Player player;
+  Kitten(this.player);
 }
 
 class Cat {
-  final Player owner;
-  Cat(this.owner);
+  final Player player;
+  Cat(this.player);
 }
