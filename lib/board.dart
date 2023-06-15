@@ -5,8 +5,26 @@ import 'general_functions.dart';
 class Board {
   List<List> grid = List.filled(6, List.filled(6, null));
   late List<List> testGrid = deepCopyMatrix(grid);
+  int numberOfKittensToReturnIfMoveIsTakenBack = 0;
+  int numberOfCatsToReturnIfMoveIsTakenBack = 0;
+
+  void prepareForPlacement(Player player) {
+    for (int counter = 0; counter < numberOfKittensToReturnIfMoveIsTakenBack; counter++) {
+      player.kittens.removeAt(0);
+    }
+    for (int counter = 0; counter < numberOfCatsToReturnIfMoveIsTakenBack; counter++) {
+      player.cats.removeAt(0);
+    }
+
+    numberOfCatsToReturnIfMoveIsTakenBack = 0;
+    numberOfKittensToReturnIfMoveIsTakenBack = 0;
+
+    testGrid = deepCopyMatrix(grid);
+  }
 
   void boopCat(int row, int column, Player player) {
+    prepareForPlacement(player);
+
     // return if the piece isn't placed on an open spot
     if (grid[row][column] != null) {
       return;
@@ -28,6 +46,8 @@ class Board {
   }
 
   void boopKitten(int row, int column, Player player) {
+    prepareForPlacement(player);
+
     // return if the piece isn't placed on an open spot
     if (grid[row][column] != null) {
       return;
@@ -59,11 +79,13 @@ class Board {
       if (!validCoordinates.contains(row + i + i) || !validCoordinates.contains(column + j + j)) {
         if (grid[row + i][column + j] is Kitten) {
           player.kittens.add(Kitten(player));
+          numberOfKittensToReturnIfMoveIsTakenBack++;
         } else {
           player.cats.add(Cat(player));
+          numberOfCatsToReturnIfMoveIsTakenBack++;
         }
 
-        grid[row + i][column + j] = null;
+        testGrid[row + i][column + j] = null;
       }
       // unless the position it is being moved into isn't empty
       if (grid[row + i + i][column + j + j] != null) {
@@ -71,12 +93,12 @@ class Board {
       } // if the piece can be "booped" into an empty space, "boop" it
       else {
         if (grid[row + i][column + j] is Kitten) {
-          grid[row + i + i][column + j + j] = Kitten(player);
+          testGrid[row + i + i][column + j + j] = Kitten(player);
         } else {
-          grid[row + i + i][column + j + j] = Cat(player);
+          testGrid[row + i + i][column + j + j] = Cat(player);
         }
 
-        grid[row + i][column + j] = null;
+        testGrid[row + i][column + j] = null;
       }
     }
   }
@@ -91,21 +113,17 @@ class Board {
       // if the kitten is being moved off the edge, give it back to its owner
       if (!validCoordinates.contains(row + i + i) || !validCoordinates.contains(column + j + j)) {
         player.kittens.add(Kitten(player));
+        numberOfKittensToReturnIfMoveIsTakenBack++;
 
-        grid[row + i][column + j] = null;
+        testGrid[row + i][column + j] = null;
       }
       // unless the position it is being moved into isn't empty
       if (grid[row + i + i][column + j + j] != null) {
         return;
       } // if the piece can be "booped" into an empty space, "boop" it
       else {
-        if (grid[row + i][column + j] is Kitten) {
-          grid[row + i + i][column + j + j] = Kitten(player);
-        } else {
-          grid[row + i + i][column + j + j] = Cat(player);
-        }
-
-        grid[row + i][column + j] = null;
+        testGrid[row + i + i][column + j + j] = Kitten(player);
+        testGrid[row + i][column + j] = null;
       }
     }
   }
