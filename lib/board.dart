@@ -1,3 +1,5 @@
+import 'dart:js_interop';
+
 import 'kittens_and_cats.dart';
 import 'player.dart';
 import 'general_functions.dart';
@@ -124,6 +126,25 @@ class Board {
     grid = deepCopyMatrix(tempGrid);
   }
 
+  bool checkIfAllPiecesBelongToTheSamePlayer(List<List<int>> coordinates) {
+    int row;
+    int column;
+    Player? owner;
+    for (List<int> coordinate in coordinates) {
+      row = coordinate[0];
+      column = coordinate[1];
+      if (tempGrid[row][column].isNull) {
+        return false;
+      }
+      if (owner == null) {
+        owner = tempGrid[row][column].player;
+      } else if (tempGrid[row][column].player != owner) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   List<List<List<int>>> findAllThreeInARow() {
     List<List<List<int>>> allCoordinates = [];
 
@@ -131,13 +152,15 @@ class Board {
 
     // Check rows
     for (int row = 0; row < 6; row++) {
-      for (int col = 0; col < 4; col++) {
-        if (tempGrid[row][col] != null &&
-            tempGrid[row][col] == tempGrid[row][col + 1] &&
-            tempGrid[row][col] == tempGrid[row][col + 2]) {
+      for (int column = 0; column < 4; column++) {
+        if (checkIfAllPiecesBelongToTheSamePlayer([
+          [row, column],
+          [row, column + 1],
+          [row, column + 2]
+        ])) {
           List<List<int>> coordinates = [];
           for (int i = 0; i < 3; i++) {
-            coordinates.add([row, col + i]);
+            coordinates.add([row, column + i]);
           }
           allCoordinates.add(coordinates);
         }
@@ -145,14 +168,16 @@ class Board {
     }
 
     // Check columns
-    for (int col = 0; col < 6; col++) {
+    for (int column = 0; column < 6; column++) {
       for (int row = 0; row < 4; row++) {
-        if (tempGrid[row][col] != null &&
-            tempGrid[row][col] == tempGrid[row + 1][col] &&
-            tempGrid[row][col] == tempGrid[row + 2][col]) {
+        if (checkIfAllPiecesBelongToTheSamePlayer([
+          [row, column],
+          [row + 1, column],
+          [row + 2, column]
+        ])) {
           List<List<int>> coordinates = [];
           for (int i = 0; i < 3; i++) {
-            coordinates.add([row + i, col]);
+            coordinates.add([row + i, column]);
           }
           allCoordinates.add(coordinates);
         }
@@ -161,13 +186,15 @@ class Board {
 
     // Check diagonals (top-left to bottom-right)
     for (int row = 0; row < 4; row++) {
-      for (int col = 0; col < 4; col++) {
-        if (tempGrid[row][col] != null &&
-            tempGrid[row][col] == tempGrid[row + 1][col + 1] &&
-            tempGrid[row][col] == tempGrid[row + 2][col + 2]) {
+      for (int column = 0; column < 4; column++) {
+        if (checkIfAllPiecesBelongToTheSamePlayer([
+          [row, column],
+          [row + 1, column + 1],
+          [row + 2, column + 2]
+        ])) {
           List<List<int>> coordinates = [];
           for (int i = 0; i < 3; i++) {
-            coordinates.add([row + i, col + i]);
+            coordinates.add([row + i, column + i]);
           }
           allCoordinates.add(coordinates);
         }
@@ -176,13 +203,15 @@ class Board {
 
     // Check diagonals (top-right to bottom-left)
     for (int row = 0; row < 4; row++) {
-      for (int col = 2; col < 6; col++) {
-        if (tempGrid[row][col] != null &&
-            tempGrid[row][col] == tempGrid[row + 1][col - 1] &&
-            tempGrid[row][col] == tempGrid[row + 2][col - 2]) {
+      for (int column = 2; column < 6; column++) {
+        if (checkIfAllPiecesBelongToTheSamePlayer([
+          [row, column],
+          [row + 1, column - 1],
+          [row + 2, column - 2]
+        ])) {
           List<List<int>> coordinates = [];
           for (int i = 0; i < 3; i++) {
-            coordinates.add([row + i, col - i]);
+            coordinates.add([row + i, column - i]);
           }
           allCoordinates.add(coordinates);
         }
@@ -211,4 +240,6 @@ class Board {
     }
     return false;
   }
+
+  void upgradeThreeInARows() {}
 }
