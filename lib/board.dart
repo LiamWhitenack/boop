@@ -1,5 +1,3 @@
-import 'dart:js_interop';
-
 import 'kittens_and_cats.dart';
 import 'player.dart';
 import 'general_functions.dart';
@@ -229,9 +227,9 @@ class Board {
         int row = coordinate[0];
         int column = coordinate[1];
         if (tempGrid[row][column] is Cat) {
-          if (tempGrid[row][column].player == player) {
-            numberOfCatsInARow++;
-          }
+          numberOfCatsInARow++;
+        } else {
+          break;
         }
         if (numberOfCatsInARow == 3) {
           return true;
@@ -241,5 +239,16 @@ class Board {
     return false;
   }
 
-  void upgradeThreeInARows() {}
+  void upgradeThreeInARows() {
+    List<List<List<int>>> allThreeInARowCoordinates = findAllThreeInARow();
+    for (List<List<int>> threeInARowCoordinates in allThreeInARowCoordinates) {
+      for (List<int> coordinates in threeInARowCoordinates) {
+        int row = coordinates[0];
+        int column = coordinates[1];
+
+        grid[row][column].player.cats.add(Cat(grid[row][column].player));
+        grid[row][column] = null;
+      }
+    }
+  }
 }
