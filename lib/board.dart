@@ -82,17 +82,17 @@ class Board {
   }
 
   void boopCatInGivenDirection(int row, int column, int i, int j, Player player) {
-    // ignore the coordinates that are not on the grid
-
+    Player? ownerOfBoopedPiece;
     // if there is a piece neighboring the piece, "boop" it away
     if (grid[row + i][column + j] != null) {
+      ownerOfBoopedPiece = grid[row + i][column + j].player;
       // if the piece is being moved off the edge, give it back to its owner
       if (!validCoordinates.contains(row + i + i) || !validCoordinates.contains(column + j + j)) {
         if (grid[row + i][column + j] is Kitten) {
-          player.kittens.add(Kitten(player));
+          player.kittens.add(Kitten(ownerOfBoopedPiece!));
           // numberOfKittensToReturnIfMoveIsTakenBack++;
         } else {
-          player.cats.add(Cat(player));
+          player.cats.add(Cat(ownerOfBoopedPiece!));
           // numberOfCatsToReturnIfMoveIsTakenBack++;
         }
 
@@ -105,9 +105,9 @@ class Board {
       } // if the piece can be "booped" into an empty space, "boop" it
       else {
         if (grid[row + i][column + j] is Kitten) {
-          tempGrid[row + i + i][column + j + j] = Kitten(player);
+          tempGrid[row + i + i][column + j + j] = Kitten(ownerOfBoopedPiece!);
         } else {
-          tempGrid[row + i + i][column + j + j] = Cat(player);
+          tempGrid[row + i + i][column + j + j] = Cat(ownerOfBoopedPiece!);
         }
 
         tempGrid[row + i][column + j] = null;
@@ -116,13 +116,14 @@ class Board {
   }
 
   void boopKittenInGivenDirection(int row, int column, int i, int j, Player player) {
-    // ignore the coordinates that are not on the grid
+    Player? ownerOfBoopedPiece;
 
     // if there is a kitten neighboring the piece, "boop" it away
     if (grid[row + i][column + j] is Kitten) {
+      ownerOfBoopedPiece = grid[row + i][column + j].player;
       // if the kitten is being moved off the edge, give it back to its owner
       if (!validCoordinates.contains(row + i + i) || !validCoordinates.contains(column + j + j)) {
-        player.kittens.add(Kitten(player));
+        player.kittens.add(Kitten(ownerOfBoopedPiece!));
         // numberOfKittensToReturnIfMoveIsTakenBack++;
 
         tempGrid[row + i][column + j] = null;
@@ -133,7 +134,7 @@ class Board {
         return;
       } // if the piece can be "booped" into an empty space, "boop" it
       else {
-        tempGrid[row + i + i][column + j + j] = Kitten(player);
+        tempGrid[row + i + i][column + j + j] = Kitten(ownerOfBoopedPiece!);
         tempGrid[row + i][column + j] = null;
       }
     }
@@ -271,5 +272,6 @@ class Board {
         grid[row][column] = null;
       }
     }
+    tempGrid = deepCopyMatrix(grid);
   }
 }
