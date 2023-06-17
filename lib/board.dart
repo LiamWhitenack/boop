@@ -219,7 +219,7 @@ class Board {
     return allCoordinates;
   }
 
-  bool checkForWin(Player player) {
+  String? checkForWin() {
     int numberOfCatsInARow = 0;
     List<List<List<int>>> allThreeInARowCoordinates = findAllThreeInARow();
     for (List<List<int>> threeInARowCoordinates in allThreeInARowCoordinates) {
@@ -232,11 +232,11 @@ class Board {
           break;
         }
         if (numberOfCatsInARow == 3) {
-          return true;
+          return tempGrid[row][column].player.name;
         }
       }
     }
-    return false;
+    return null;
   }
 
   void upgradeThreeInARows() {

@@ -11,13 +11,14 @@ String? takeTurn(Board board, Player player1, Player player2, String pieceType, 
   } else {
     board.boopKitten(row, column, player1);
   }
-  if (board.checkForWin(player1)) {
+  if (board.checkForWin() != null) {
     return player1.name;
   }
-  if (board.checkForWin(player2)) {
+  if (board.checkForWin() != null) {
     return player1.name;
   }
   board.upgradeThreeInARows();
+  return null;
 }
 
 void playGame() {
@@ -83,11 +84,16 @@ void playGame() {
     }
 
     if (playerOneTurn) {
-      takeTurn(board, Ralph, Jack, pieceType!, row!, column!);
+      winner = takeTurn(board, Ralph, Jack, pieceType!, row!, column!);
       playerOneTurn = !playerOneTurn;
     } else {
-      takeTurn(board, Ralph, Jack, pieceType!, row!, column!);
+      winner = takeTurn(board, Ralph, Jack, pieceType!, row!, column!);
       playerOneTurn = !playerOneTurn;
     }
+    if (winner != null) {
+      break;
+    }
   }
+
+  print('$winner wins!');
 }
