@@ -3,32 +3,37 @@ import 'player.dart';
 import 'general_functions.dart';
 
 class Board {
-  List<List> grid = List.filled(6, List.filled(6, null));
+  List<List> grid = List.generate(6, (row) => List.filled(6, null));
   late List<List> tempGrid = deepCopyMatrix(grid);
-  int numberOfKittensToReturnIfMoveIsTakenBack = 0;
-  int numberOfCatsToReturnIfMoveIsTakenBack = 0;
+  int? numberOfKittensBelongingToPlayerBeforeTurnStarted;
+  int? numberOfCatsBelongingToPlayerBeforeTurnStarted;
   // these are the coordinates that are on the grid
   List<int> validCoordinates = [0, 1, 2, 3, 4, 5];
 
   void prepareForPlacement(Player player) {
-    for (int counter = 0; counter < numberOfKittensToReturnIfMoveIsTakenBack; counter++) {
-      player.kittens.removeAt(0);
-    }
-    for (int counter = 0; counter < numberOfCatsToReturnIfMoveIsTakenBack; counter++) {
-      player.cats.removeAt(0);
-    }
+    if (numberOfCatsBelongingToPlayerBeforeTurnStarted != null &&
+        numberOfKittensBelongingToPlayerBeforeTurnStarted != null) {
+      player.kittens = List.filled(numberOfKittensBelongingToPlayerBeforeTurnStarted!, Kitten(player), growable: true);
+      player.cats = List.filled(numberOfCatsBelongingToPlayerBeforeTurnStarted!, Cat(player), growable: true);
 
-    numberOfCatsToReturnIfMoveIsTakenBack = 0;
-    numberOfKittensToReturnIfMoveIsTakenBack = 0;
-
-    tempGrid = deepCopyMatrix(grid);
+      tempGrid = deepCopyMatrix(grid);
+    }
   }
 
   void boopCat(int row, int column, Player player) {
     prepareForPlacement(player);
+    numberOfCatsBelongingToPlayerBeforeTurnStarted = player.cats.length;
+    numberOfKittensBelongingToPlayerBeforeTurnStarted = player.kittens.length;
 
     // return if the piece isn't placed on an open spot
     if (grid[row][column] != null) {
+      print('please place on open spot');
+      return;
+    }
+
+    // return if the player is out of cats to place
+    if (player.kittens.isEmpty) {
+      print('not enough cats to place!');
       return;
     }
 
@@ -41,14 +46,24 @@ class Board {
       }
     }
 
-    grid[row][column] = Cat(player);
+    player.cats.removeAt(0);
+    tempGrid[row][column] = Cat(player);
   }
 
   void boopKitten(int row, int column, Player player) {
     prepareForPlacement(player);
+    numberOfCatsBelongingToPlayerBeforeTurnStarted = player.cats.length;
+    numberOfKittensBelongingToPlayerBeforeTurnStarted = player.kittens.length;
 
     // return if the piece isn't placed on an open spot
     if (grid[row][column] != null) {
+      print('please place on open spot');
+      return;
+    }
+
+    // return if the player is out of kittens to place
+    if (player.kittens.isEmpty) {
+      print('not enough kittens to place!');
       return;
     }
 
@@ -61,7 +76,9 @@ class Board {
       }
     }
 
-    grid[row][column] = Cat(player);
+    // print("64");
+    player.kittens.removeAt(0);
+    tempGrid[row][column] = Kitten(player);
   }
 
   void boopCatInGivenDirection(int row, int column, int i, int j, Player player) {
@@ -73,13 +90,14 @@ class Board {
       if (!validCoordinates.contains(row + i + i) || !validCoordinates.contains(column + j + j)) {
         if (grid[row + i][column + j] is Kitten) {
           player.kittens.add(Kitten(player));
-          numberOfKittensToReturnIfMoveIsTakenBack++;
+          // numberOfKittensToReturnIfMoveIsTakenBack++;
         } else {
           player.cats.add(Cat(player));
-          numberOfCatsToReturnIfMoveIsTakenBack++;
+          // numberOfCatsToReturnIfMoveIsTakenBack++;
         }
 
         tempGrid[row + i][column + j] = null;
+        return;
       }
       // unless the position it is being moved into isn't empty
       if (grid[row + i + i][column + j + j] != null) {
@@ -87,6 +105,7 @@ class Board {
       } // if the piece can be "booped" into an empty space, "boop" it
       else {
         if (grid[row + i][column + j] is Kitten) {
+          // print('91');
           tempGrid[row + i + i][column + j + j] = Kitten(player);
         } else {
           tempGrid[row + i + i][column + j + j] = Cat(player);
@@ -105,15 +124,17 @@ class Board {
       // if the kitten is being moved off the edge, give it back to its owner
       if (!validCoordinates.contains(row + i + i) || !validCoordinates.contains(column + j + j)) {
         player.kittens.add(Kitten(player));
-        numberOfKittensToReturnIfMoveIsTakenBack++;
+        // numberOfKittensToReturnIfMoveIsTakenBack++;
 
         tempGrid[row + i][column + j] = null;
+        return;
       }
       // unless the position it is being moved into isn't empty
       if (grid[row + i + i][column + j + j] != null) {
         return;
       } // if the piece can be "booped" into an empty space, "boop" it
       else {
+        // print("${row + i + i}, ${column + j + j}");
         tempGrid[row + i + i][column + j + j] = Kitten(player);
         tempGrid[row + i][column + j] = null;
       }
@@ -122,6 +143,8 @@ class Board {
 
   void updateGrid() {
     grid = deepCopyMatrix(tempGrid);
+    numberOfCatsBelongingToPlayerBeforeTurnStarted = null;
+    numberOfKittensBelongingToPlayerBeforeTurnStarted = null;
   }
 
   bool checkIfAllPiecesBelongToTheSamePlayer(List<List<int>> coordinates) {
@@ -131,7 +154,7 @@ class Board {
     for (List<int> coordinate in coordinates) {
       row = coordinate[0];
       column = coordinate[1];
-      if (tempGrid[row][column].isNull) {
+      if (tempGrid[row][column] == null) {
         return false;
       }
       if (owner == null) {
@@ -146,7 +169,7 @@ class Board {
   List<List<List<int>>> findAllThreeInARow() {
     List<List<List<int>>> allCoordinates = [];
 
-    // WARNING: WARNING: This code was generated by ChatGPT and could easily have some errors although the code looks pretty good
+    // WARNING: This code was generated by ChatGPT and could easily have some errors although the code looks pretty good
 
     // Check rows
     for (int row = 0; row < 6; row++) {

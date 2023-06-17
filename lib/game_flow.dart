@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:boop/player.dart';
 import 'board.dart';
+// import 'package:flutter/material.dart';
 
 String? takeTurn(Board board, Player player1, Player player2, String pieceType, int row, int column) {
   if (pieceType == 'Cat') {
@@ -11,19 +12,27 @@ String? takeTurn(Board board, Player player1, Player player2, String pieceType, 
   } else {
     board.boopKitten(row, column, player1);
   }
+
+  // vv add check to make sure that was the move that the player wanted here vv
+  // ==========================================================================
+  print(player1.kittens);
+  print(player1.cats);
+  board.updateGrid();
+
   if (board.checkForWin() != null) {
     return player1.name;
   }
   if (board.checkForWin() != null) {
     return player1.name;
   }
+
   board.upgradeThreeInARows();
   return null;
 }
 
 void playGame() {
-  Player Ralph = Player('Ralph');
-  Player Jack = Player('Jack');
+  Player ralph = Player('Ralph');
+  Player jack = Player('Jack');
 
   Board board = Board();
 
@@ -84,15 +93,17 @@ void playGame() {
     }
 
     if (playerOneTurn) {
-      winner = takeTurn(board, Ralph, Jack, pieceType!, row!, column!);
+      winner = takeTurn(board, ralph, jack, pieceType!, row!, column!);
       playerOneTurn = !playerOneTurn;
     } else {
-      winner = takeTurn(board, Ralph, Jack, pieceType!, row!, column!);
+      winner = takeTurn(board, ralph, jack, pieceType!, row!, column!);
       playerOneTurn = !playerOneTurn;
     }
     if (winner != null) {
       break;
     }
+
+    print(board.grid);
   }
 
   print('$winner wins!');
