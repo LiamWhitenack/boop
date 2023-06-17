@@ -61,12 +61,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void onTappedCell(int newRow, int newColumn) {
     setState(() {
-      print('piece at $newRow, $newColumn was tapped');
       row = newRow;
       column = newColumn;
       pieceType = 'Kitten';
-      takeTurn(widget.board, widget.playerOne, widget.playerTwo, pieceType!, row!, column!);
-      // print(widget.board.tempGrid);
+      if (playerOneTurn) {
+        takeTurn(widget.board, widget.playerOne, widget.playerTwo, pieceType!, row!, column!);
+      } else {
+        takeTurn(widget.board, widget.playerTwo, widget.playerOne, pieceType!, row!, column!);
+      }
+      playerOneTurn = !playerOneTurn;
     });
   }
 
@@ -80,6 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Grid(
         grid: widget.board.grid,
         onTapCell: onTappedCell,
+        playerOne: widget.playerOne,
       ),
     );
   }
@@ -88,8 +92,25 @@ class _MyHomePageState extends State<MyHomePage> {
 class Grid extends StatelessWidget {
   final List<List<dynamic>> grid;
   final Function(int, int) onTapCell;
+  final Player playerOne;
 
-  const Grid({super.key, required this.grid, required this.onTapCell});
+  const Grid({
+    super.key,
+    required this.grid,
+    required this.onTapCell,
+    required this.playerOne,
+  });
+
+  Color getCellColor(dynamic value, Player playerOne) {
+    if (value == null) {
+      return Colors.red;
+    }
+    if (value.player == playerOne) {
+      return Colors.blue;
+    } else {
+      return Colors.purple;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,12 +121,11 @@ class Grid extends StatelessWidget {
       ),
       itemBuilder: (BuildContext context, int index) {
         int row = index ~/ grid[0].length;
-        int col = index % grid[0].length;
-        bool isNull = grid[row][col] == null;
-        Color cellColor = isNull ? Colors.red : Colors.blue;
+        int column = index % grid[0].length;
+        Color cellColor = getCellColor(grid[row][column], playerOne);
         return GestureDetector(
           onTap: () {
-            onTapCell(row, col);
+            onTapCell(row, column);
           },
           child: Container(
             decoration: BoxDecoration(
@@ -114,7 +134,7 @@ class Grid extends StatelessWidget {
             ),
             child: Center(
               child: Text(
-                grid[row][col]?.toString() ?? '',
+                grid[row][column]?.toString() ?? '',
                 style: const TextStyle(color: Colors.white),
               ),
             ),

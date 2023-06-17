@@ -15,8 +15,6 @@ String? takeTurn(Board board, Player player1, Player player2, String pieceType, 
 
   // vv add check to make sure that was the move that the player wanted here vv
   // ==========================================================================
-  print(player1.kittens);
-  print(player1.cats);
   board.updateGrid();
 
   if (board.checkForWin() != null) {

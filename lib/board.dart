@@ -105,7 +105,6 @@ class Board {
       } // if the piece can be "booped" into an empty space, "boop" it
       else {
         if (grid[row + i][column + j] is Kitten) {
-          // print('91');
           tempGrid[row + i + i][column + j + j] = Kitten(player);
         } else {
           tempGrid[row + i + i][column + j + j] = Cat(player);
@@ -134,7 +133,6 @@ class Board {
         return;
       } // if the piece can be "booped" into an empty space, "boop" it
       else {
-        // print("${row + i + i}, ${column + j + j}");
         tempGrid[row + i + i][column + j + j] = Kitten(player);
         tempGrid[row + i][column + j] = null;
       }
