@@ -71,13 +71,13 @@ class _MyHomePageState extends State<MyHomePage> {
         throw Exception('All out of pieces to place!');
       }
       if (widget.playerOne.kittens.isEmpty && widget.playerOne.cats.isEmpty) {
-        takeTurn(widget.board, widget.playerTwo, widget.playerOne, pieceType!, row!, column!);
+        takeTurn(widget.board, widget.playerTwo, pieceType!, row!, column!);
       } else if (widget.playerTwo.kittens.isEmpty && widget.playerTwo.cats.isEmpty) {
-        takeTurn(widget.board, widget.playerOne, widget.playerTwo, pieceType!, row!, column!);
+        takeTurn(widget.board, widget.playerOne, pieceType!, row!, column!);
       } else if (playerOneTurn) {
-        takeTurn(widget.board, widget.playerOne, widget.playerTwo, pieceType!, row!, column!);
+        takeTurn(widget.board, widget.playerOne, pieceType!, row!, column!);
       } else {
-        takeTurn(widget.board, widget.playerTwo, widget.playerOne, pieceType!, row!, column!);
+        takeTurn(widget.board, widget.playerTwo, pieceType!, row!, column!);
       }
       playerOneTurn = !playerOneTurn;
     });

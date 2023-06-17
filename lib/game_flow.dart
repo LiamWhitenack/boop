@@ -6,7 +6,7 @@ import 'package:boop/player.dart';
 import 'board.dart';
 // import 'package:flutter/material.dart';
 
-String? takeTurn(Board board, Player player1, Player player2, String pieceType, int row, int column) {
+String? takeTurn(Board board, Player player1, String pieceType, int row, int column) {
   if (pieceType == 'Cat') {
     board.boopCat(row, column, player1);
   } else {
@@ -91,10 +91,10 @@ void playGame() {
     }
 
     if (playerOneTurn) {
-      winner = takeTurn(board, ralph, jack, pieceType!, row!, column!);
+      winner = takeTurn(board, ralph, pieceType!, row!, column!);
       playerOneTurn = !playerOneTurn;
     } else {
-      winner = takeTurn(board, ralph, jack, pieceType!, row!, column!);
+      winner = takeTurn(board, jack, pieceType!, row!, column!);
       playerOneTurn = !playerOneTurn;
     }
     if (winner != null) {
