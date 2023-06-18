@@ -1,5 +1,4 @@
 // import 'package:boop/game_flow.dart';
-import 'package:boop/kittens_and_cats.dart';
 import 'package:boop/player.dart';
 import 'package:flutter/material.dart';
 
@@ -28,17 +27,6 @@ class MyApp extends StatelessWidget {
           playerOne: Player('Ralph'),
           playerTwo: Player('Jack'),
           board: Board(),
-        ),
-        floatingActionButton: Draggable<Kitten>(
-          data: Kitten(Player('Ralph')),
-          feedback: FloatingActionButton(
-            child: const Icon(Icons.ac_unit),
-            onPressed: () {},
-          ),
-          child: FloatingActionButton(
-            child: const Icon(Icons.ac_unit),
-            onPressed: () {},
-          ),
         ),
       ),
     );

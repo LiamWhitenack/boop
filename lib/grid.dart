@@ -1,22 +1,22 @@
-import 'package:boop/kittens_and_cats.dart';
 import 'package:boop/player.dart';
 import 'package:flutter/material.dart';
 
 import 'board.dart';
 // import 'kittens_and_cats.dart';
 
+// ignore: must_be_immutable
 class Grid extends StatefulWidget {
   final Board board;
-  final Function(int, int) onTapCell;
   final Player playerOne;
   final Player playerTwo;
+  final Function refreshMyGamePageState;
 
-  const Grid({
+  Grid({
     super.key,
     required this.board,
-    required this.onTapCell,
     required this.playerOne,
     required this.playerTwo,
+    required this.refreshMyGamePageState,
   });
 
   @override
@@ -27,7 +27,6 @@ class _GridState extends State<Grid> {
   List<List<bool>> isDragOver = List.generate(6, (row) => List.filled(6, true));
   String? winner;
   bool playerOneTurn = true;
-
   Color getCellColor(dynamic value, Player playerOne) {
     if (value == null) {
       return Colors.red;
@@ -56,20 +55,20 @@ class _GridState extends State<Grid> {
         int row = index ~/ widget.board.tempGrid[0].length;
         int column = index % widget.board.tempGrid[0].length;
         Color cellColor = getCellColor(widget.board.tempGrid[row][column], widget.playerOne);
-        return DragTarget<Kitten>(
+        return DragTarget<String>(
           onAccept: (value) {
-            setState(() {
-              widget.board.updateGrid();
-              if (widget.board.checkForWin() != null) {
-                winner = widget.board.checkForWin();
-              }
+            widget.board.updateGrid();
+            if (widget.board.checkForWin() != null) {
+              winner = widget.board.checkForWin();
+            }
 
-              widget.board.upgradeThreeInARows();
+            widget.board.upgradeThreeInARows();
 
-              playerOneTurn = !playerOneTurn;
+            playerOneTurn = !playerOneTurn;
 
-              isDragOver[row][column] = false;
-            });
+            isDragOver[row][column] = false;
+            setState(() {});
+            widget.refreshMyGamePageState();
           },
           onLeave: (value) {
             setState(() {
@@ -85,27 +84,25 @@ class _GridState extends State<Grid> {
                   widget.playerTwo.kittens.isEmpty) {
                 throw Exception('All out of pieces to place!');
               }
-
-              widget.board.boopKitten(row, column, activePlayer);
+              if (value == 'Kitten') {
+                widget.board.boopKitten(row, column, activePlayer);
+              } else if (value == 'Cat') {
+                widget.board.boopCat(row, column, activePlayer);
+              }
               isDragOver[row][column] = true;
             });
             return widget.board.grid[row][column] == null;
           },
           builder: (context, candidateData, rejectedData) {
-            return GestureDetector(
-              onTap: () {
-                widget.onTapCell(row, column);
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: cellColor,
-                  border: Border.all(color: Colors.black),
-                ),
-                child: Center(
-                  child: Text(
-                    widget.board.tempGrid[row][column]?.toString() ?? '',
-                    style: const TextStyle(color: Colors.white),
-                  ),
+            return Container(
+              decoration: BoxDecoration(
+                color: cellColor,
+                border: Border.all(color: Colors.black),
+              ),
+              child: Center(
+                child: Text(
+                  widget.board.tempGrid[row][column]?.toString() ?? '',
+                  style: const TextStyle(color: Colors.white),
                 ),
               ),
             );

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'game_flow.dart';
 import 'grid.dart';
 import 'player.dart';
 import 'board.dart';
@@ -33,37 +32,14 @@ class _MyGamePageState extends State<MyGamePage> {
   int? row;
   int? column;
 
-  void onTappedCell(int newRow, int newColumn) {
-    if (winner != null) return;
-    if (widget.board.grid[newRow][newColumn] != null) return;
-    setState(() {
-      row = newRow;
-      column = newColumn;
-      pieceType = 'Kitten';
-      if (widget.playerOne.kittens.isEmpty &&
-          widget.playerTwo.cats.isEmpty &&
-          widget.playerOne.cats.isEmpty &&
-          widget.playerTwo.kittens.isEmpty) {
-        throw Exception('All out of pieces to place!');
-      }
-      if (widget.playerOne.kittens.isEmpty && widget.playerOne.cats.isEmpty) {
-        winner = takeTurn(widget.board, widget.playerTwo, pieceType!, row!, column!);
-      } else if (widget.playerTwo.kittens.isEmpty && widget.playerTwo.cats.isEmpty) {
-        winner = takeTurn(widget.board, widget.playerOne, pieceType!, row!, column!);
-      } else if (playerOneTurn) {
-        winner = takeTurn(widget.board, widget.playerOne, pieceType!, row!, column!);
-      } else {
-        winner = takeTurn(widget.board, widget.playerTwo, pieceType!, row!, column!);
-      }
-      if (winner != null) {
-        print('$winner wins!');
-      }
-      playerOneTurn = !playerOneTurn;
-    });
+  void refreshMyGamePageState() {
+    playerOneTurn = !playerOneTurn;
+    setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
+    Player activePlayer = playerOneTurn ? widget.playerOne : widget.playerTwo;
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
     final double limitingSize = screenHeight > screenWidth ? screenWidth : screenHeight;
@@ -73,15 +49,64 @@ class _MyGamePageState extends State<MyGamePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: SizedBox(
-          height: limitingSize / 1.5,
-          width: limitingSize / 1.5,
-          child: Grid(
-            board: widget.board,
-            onTapCell: onTappedCell,
-            playerOne: widget.playerOne,
-            playerTwo: widget.playerTwo,
-          ),
+        child: Column(
+          children: [
+            SizedBox(
+              height: limitingSize / 1.5,
+              width: limitingSize / 1.5,
+              child: Grid(
+                board: widget.board,
+                playerOne: widget.playerOne,
+                playerTwo: widget.playerTwo,
+                refreshMyGamePageState: refreshMyGamePageState,
+              ),
+            ),
+            SizedBox(
+              height: screenHeight / 8,
+              width: limitingSize / 1.5,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  activePlayer.cats.isNotEmpty
+                      // true
+                      ? Draggable<String>(
+                          data: 'Cat',
+                          feedback: FloatingActionButton(
+                            child: const Icon(Icons.ac_unit),
+                            onPressed: () {},
+                          ),
+                          child: FloatingActionButton(
+                            child: const Icon(Icons.ac_unit),
+                            onPressed: () {},
+                          ),
+                        )
+                      : const SizedBox(),
+                  // activePlayer.cats.isNotEmpty && activePlayer.kittens.isNotEmpty
+                  //     ? Expanded(
+                  //         flex: 1,
+                  //         child: Container(
+                  //           color: Colors.green,
+                  //         ),
+                  //       )
+                  //     : const SizedBox(),
+                  activePlayer.kittens.isNotEmpty
+                      // true
+                      ? Draggable<String>(
+                          data: 'Kitten',
+                          feedback: FloatingActionButton(
+                            child: const Icon(Icons.ac_unit),
+                            onPressed: () {},
+                          ),
+                          child: FloatingActionButton(
+                            child: const Icon(Icons.ac_unit),
+                            onPressed: () {},
+                          ),
+                        )
+                      : const SizedBox(),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
