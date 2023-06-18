@@ -51,6 +51,7 @@ class _MyGamePageState extends State<MyGamePage> {
       body: Center(
         child: Column(
           children: [
+            SizedBox(height: screenHeight / 20),
             SizedBox(
               height: limitingSize / 1.5,
               width: limitingSize / 1.5,
@@ -65,41 +66,39 @@ class _MyGamePageState extends State<MyGamePage> {
               height: screenHeight / 8,
               width: limitingSize / 1.5,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   activePlayer.cats.isNotEmpty
                       // true
                       ? Draggable<String>(
                           data: 'Cat',
-                          feedback: FloatingActionButton(
-                            child: const Icon(Icons.ac_unit),
-                            onPressed: () {},
+                          feedback: Container(
+                            color: Colors.amber,
+                            height: 50,
+                            width: 50,
                           ),
-                          child: FloatingActionButton(
-                            child: const Icon(Icons.ac_unit),
-                            onPressed: () {},
+                          child: Container(
+                            color: Colors.amber,
+                            height: 50,
+                            width: 50,
                           ),
                         )
                       : const SizedBox(),
-                  // activePlayer.cats.isNotEmpty && activePlayer.kittens.isNotEmpty
-                  //     ? Expanded(
-                  //         flex: 1,
-                  //         child: Container(
-                  //           color: Colors.green,
-                  //         ),
-                  //       )
-                  //     : const SizedBox(),
+                  activePlayer.cats.isNotEmpty && activePlayer.kittens.isNotEmpty
+                      ? const SizedBox(width: 100)
+                      : const SizedBox(),
                   activePlayer.kittens.isNotEmpty
-                      // true
-                      ? Draggable<String>(
+                      ? const Draggable<String>(
                           data: 'Kitten',
-                          feedback: FloatingActionButton(
-                            child: const Icon(Icons.ac_unit),
-                            onPressed: () {},
+                          feedback: Icon(
+                            Icons.circle,
+                            color: Colors.amber,
+                            size: 50,
                           ),
-                          child: FloatingActionButton(
-                            child: const Icon(Icons.ac_unit),
-                            onPressed: () {},
+                          child: Icon(
+                            Icons.circle,
+                            color: Colors.amber,
+                            size: 50,
                           ),
                         )
                       : const SizedBox(),

@@ -29,12 +29,12 @@ class _GridState extends State<Grid> {
   bool playerOneTurn = true;
   Color getCellColor(dynamic value, Player playerOne) {
     if (value == null) {
-      return Colors.red;
+      return Colors.blue.shade200;
     }
     if (value.player == playerOne) {
-      return Colors.blue;
+      return Colors.amber;
     } else {
-      return Colors.purple;
+      return Colors.grey;
     }
   }
 
@@ -97,7 +97,7 @@ class _GridState extends State<Grid> {
             return Container(
               decoration: BoxDecoration(
                 color: cellColor,
-                border: Border.all(color: Colors.black),
+                border: Border.all(color: Colors.white, width: 2),
               ),
               child: Center(
                 child: Text(
