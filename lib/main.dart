@@ -89,15 +89,22 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double limitingSize = screenHeight > screenWidth ? screenWidth : screenHeight;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Grid(
-        grid: widget.board.grid,
-        onTapCell: onTappedCell,
-        playerOne: widget.playerOne,
+      body: SizedBox(
+        height: limitingSize / 1.5,
+        width: limitingSize / 1.5,
+        child: Grid(
+          grid: widget.board.grid,
+          onTapCell: onTappedCell,
+          playerOne: widget.playerOne,
+        ),
       ),
     );
   }
