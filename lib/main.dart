@@ -24,8 +24,8 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         body: MyGamePage(
           title: 'Boop. Game',
-          playerOne: Player('Ralph'),
-          playerTwo: Player('Jack'),
+          playerOne: Player('Ralph', Colors.orange),
+          playerTwo: Player('Jack', Colors.grey),
           board: Board(),
         ),
       ),

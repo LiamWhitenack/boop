@@ -3,6 +3,7 @@
 import 'dart:io';
 
 import 'package:boop/player.dart';
+import 'package:flutter/material.dart';
 import 'board.dart';
 // import 'package:flutter/material.dart';
 
@@ -27,8 +28,8 @@ String? takeTurn(Board board, Player player1, String pieceType, int row, int col
 }
 
 void playGame() {
-  Player ralph = Player('Ralph');
-  Player jack = Player('Jack');
+  Player ralph = Player('Ralph', Colors.orange);
+  Player jack = Player('Jack', Colors.orange);
 
   Board board = Board();
 

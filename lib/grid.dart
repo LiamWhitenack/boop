@@ -1,3 +1,4 @@
+import 'package:boop/kittens_and_cats.dart';
 import 'package:boop/player.dart';
 import 'package:flutter/material.dart';
 
@@ -27,15 +28,14 @@ class _GridState extends State<Grid> {
   List<List<bool>> isDragOver = List.generate(6, (row) => List.filled(6, true));
   String? winner;
   bool playerOneTurn = true;
-  Color getCellColor(dynamic value, Player playerOne) {
-    if (value == null) {
-      return Colors.blue.shade200;
+  Color getCellColor(int row, int column) {
+    // if (row == placementRow && column == placementColumn) {
+    //   return Colors.blue.shade200;
+    // }
+    if (widget.board.cellGoingToBeChangedOnUpdate(row, column)) {
+      return Colors.blue.shade100;
     }
-    if (value.player == playerOne) {
-      return Colors.amber;
-    } else {
-      return Colors.grey;
-    }
+    return Colors.blue.shade200;
   }
 
   @override
@@ -54,7 +54,7 @@ class _GridState extends State<Grid> {
       itemBuilder: (BuildContext context, int index) {
         int row = index ~/ widget.board.tempGrid[0].length;
         int column = index % widget.board.tempGrid[0].length;
-        Color cellColor = getCellColor(widget.board.tempGrid[row][column], widget.playerOne);
+        Color cellColor = getCellColor(row, column);
         return DragTarget<String>(
           onAccept: (value) {
             widget.board.updateGrid();
@@ -94,17 +94,18 @@ class _GridState extends State<Grid> {
             return widget.board.grid[row][column] == null;
           },
           builder: (context, candidateData, rejectedData) {
+            late Widget cellContents;
+            if (widget.board.tempGrid[row][column] != null) {
+              cellContents = widget.board.tempGrid[row][column].widget;
+            } else {
+              cellContents = const SizedBox();
+            }
             return Container(
               decoration: BoxDecoration(
                 color: cellColor,
                 border: Border.all(color: Colors.white, width: 2),
               ),
-              child: Center(
-                child: Text(
-                  widget.board.tempGrid[row][column]?.toString() ?? '',
-                  style: const TextStyle(color: Colors.white),
-                ),
-              ),
+              child: cellContents,
             );
           },
         );

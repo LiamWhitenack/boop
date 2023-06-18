@@ -27,13 +27,13 @@ class Board {
 
     // return if the piece isn't placed on an open spot
     if (grid[row][column] != null) {
-      print('please place on open spot');
+      // print('please place on open spot');
       return;
     }
 
     // return if the player is out of cats to place
     if (player.kittens.isEmpty) {
-      print('not enough cats to place!');
+      // print('not enough cats to place!');
       return;
     }
 
@@ -57,13 +57,13 @@ class Board {
 
     // return if the piece isn't placed on an open spot
     if (grid[row][column] != null) {
-      print('please place on open spot');
+      // print('please place on open spot');
       return;
     }
 
     // return if the player is out of kittens to place
     if (player.kittens.isEmpty) {
-      print('not enough kittens to place!');
+      // print('not enough kittens to place!');
       return;
     }
 
@@ -138,6 +138,10 @@ class Board {
         tempGrid[row + i][column + j] = null;
       }
     }
+  }
+
+  bool cellGoingToBeChangedOnUpdate(int row, int column) {
+    return tempGrid[row][column] != grid[row][column];
   }
 
   void updateGrid() {

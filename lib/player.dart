@@ -1,10 +1,13 @@
+import 'package:flutter/material.dart';
+
 import 'kittens_and_cats.dart';
 
 class Player {
   late List<Kitten> kittens;
   List<Cat> cats = [];
   final String name;
-  Player(this.name) {
+  final Color color;
+  Player(this.name, this.color) {
     kittens = List.filled(8, Kitten(this), growable: true);
   }
 

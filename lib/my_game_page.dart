@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'grid.dart';
+import 'kittens_and_cats.dart';
 import 'player.dart';
 import 'board.dart';
 
@@ -68,38 +69,24 @@ class _MyGamePageState extends State<MyGamePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  // cats
                   activePlayer.cats.isNotEmpty
                       // true
                       ? Draggable<String>(
                           data: 'Cat',
-                          feedback: Container(
-                            color: Colors.amber,
-                            height: 50,
-                            width: 50,
-                          ),
-                          child: Container(
-                            color: Colors.amber,
-                            height: 50,
-                            width: 50,
-                          ),
-                        )
+                          feedback: CatWidget(catColor: activePlayer.color),
+                          child: CatWidget(catColor: activePlayer.color))
                       : const SizedBox(),
+                  // space between
                   activePlayer.cats.isNotEmpty && activePlayer.kittens.isNotEmpty
                       ? const SizedBox(width: 100)
                       : const SizedBox(),
+                  // kittens
                   activePlayer.kittens.isNotEmpty
-                      ? const Draggable<String>(
+                      ? Draggable<String>(
                           data: 'Kitten',
-                          feedback: Icon(
-                            Icons.circle,
-                            color: Colors.amber,
-                            size: 50,
-                          ),
-                          child: Icon(
-                            Icons.circle,
-                            color: Colors.amber,
-                            size: 50,
-                          ),
+                          feedback: KittenWidget(kittenColor: activePlayer.color),
+                          child: KittenWidget(kittenColor: activePlayer.color),
                         )
                       : const SizedBox(),
                 ],
