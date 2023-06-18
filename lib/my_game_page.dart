@@ -62,26 +62,6 @@ class _MyGamePageState extends State<MyGamePage> {
     });
   }
 
-  void onAccept(cellColors, isDragOver, newRow, newColumn) {
-    setState(() {
-      cellColors[newRow][newColumn] = Colors.blue;
-      isDragOver[newRow][newColumn] = false;
-    });
-  }
-
-  void onLeave(isDragOver, newRow, newColumn) {
-    setState(() {
-      isDragOver[newRow][newColumn] = false;
-    });
-  }
-
-  bool onWillAccept(isDragOver, newRow, newColumn) {
-    setState(() {
-      isDragOver[newRow][newColumn] = true;
-    });
-    return true;
-  }
-
   @override
   Widget build(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
@@ -92,14 +72,16 @@ class _MyGamePageState extends State<MyGamePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: SizedBox(
-        height: limitingSize / 1.5,
-        width: limitingSize / 1.5,
-        child: Grid(
-          grid: widget.board.grid,
-          onTapCell: onTappedCell,
-          playerOne: widget.playerOne,
-          playerTwo: widget.playerTwo,
+      body: Center(
+        child: SizedBox(
+          height: limitingSize / 1.5,
+          width: limitingSize / 1.5,
+          child: Grid(
+            board: widget.board,
+            onTapCell: onTappedCell,
+            playerOne: widget.playerOne,
+            playerTwo: widget.playerTwo,
+          ),
         ),
       ),
     );

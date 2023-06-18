@@ -13,8 +13,6 @@ String? takeTurn(Board board, Player player1, String pieceType, int row, int col
     board.boopKitten(row, column, player1);
   }
 
-  // vv add check to make sure that was the move that the player wanted here vv
-  // ==========================================================================
   board.updateGrid();
 
   if (board.checkForWin() != null) {

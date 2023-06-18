@@ -1,17 +1,19 @@
+import 'package:boop/kittens_and_cats.dart';
 import 'package:boop/player.dart';
 import 'package:flutter/material.dart';
 
-import 'kittens_and_cats.dart';
+import 'board.dart';
+// import 'kittens_and_cats.dart';
 
 class Grid extends StatefulWidget {
-  final List<List<dynamic>> grid;
+  final Board board;
   final Function(int, int) onTapCell;
   final Player playerOne;
   final Player playerTwo;
 
   const Grid({
     super.key,
-    required this.grid,
+    required this.board,
     required this.onTapCell,
     required this.playerOne,
     required this.playerTwo,
@@ -23,6 +25,8 @@ class Grid extends StatefulWidget {
 
 class _GridState extends State<Grid> {
   List<List<bool>> isDragOver = List.generate(6, (row) => List.filled(6, true));
+  String? winner;
+  bool playerOneTurn = true;
 
   Color getCellColor(dynamic value, Player playerOne) {
     if (value == null) {
@@ -37,33 +41,55 @@ class _GridState extends State<Grid> {
 
   @override
   Widget build(BuildContext context) {
+    if (winner != null) {
+      return Text('$winner wins!');
+    }
+
+    Player activePlayer = playerOneTurn ? widget.playerOne : widget.playerTwo;
+
     return GridView.builder(
       itemCount: 36,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: widget.grid[0].length,
+        crossAxisCount: widget.board.tempGrid[0].length,
       ),
       itemBuilder: (BuildContext context, int index) {
-        int row = index ~/ widget.grid[0].length;
-        int column = index % widget.grid[0].length;
-        Color cellColor = getCellColor(widget.grid[row][column], widget.playerOne);
-        return DragTarget<int>(
+        int row = index ~/ widget.board.tempGrid[0].length;
+        int column = index % widget.board.tempGrid[0].length;
+        Color cellColor = getCellColor(widget.board.tempGrid[row][column], widget.playerOne);
+        return DragTarget<Kitten>(
           onAccept: (value) {
             setState(() {
-              widget.grid[row][column] = Kitten(widget.playerOne);
+              widget.board.updateGrid();
+              if (widget.board.checkForWin() != null) {
+                winner = widget.board.checkForWin();
+              }
+
+              widget.board.upgradeThreeInARows();
+
+              playerOneTurn = !playerOneTurn;
+
               isDragOver[row][column] = false;
             });
           },
           onLeave: (value) {
             setState(() {
-              widget.grid[row][column] = null;
+              widget.board.undoLastBoop(activePlayer);
               isDragOver[row][column] = false;
             });
           },
           onWillAccept: (value) {
             setState(() {
+              if (widget.playerOne.kittens.isEmpty &&
+                  widget.playerTwo.cats.isEmpty &&
+                  widget.playerOne.cats.isEmpty &&
+                  widget.playerTwo.kittens.isEmpty) {
+                throw Exception('All out of pieces to place!');
+              }
+
+              widget.board.boopKitten(row, column, activePlayer);
               isDragOver[row][column] = true;
             });
-            return true;
+            return widget.board.grid[row][column] == null;
           },
           builder: (context, candidateData, rejectedData) {
             return GestureDetector(
@@ -77,7 +103,7 @@ class _GridState extends State<Grid> {
                 ),
                 child: Center(
                   child: Text(
-                    widget.grid[row][column]?.toString() ?? '',
+                    widget.board.tempGrid[row][column]?.toString() ?? '',
                     style: const TextStyle(color: Colors.white),
                   ),
                 ),

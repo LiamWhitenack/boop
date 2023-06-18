@@ -10,7 +10,7 @@ class Board {
   // these are the coordinates that are on the grid
   List<int> validCoordinates = [0, 1, 2, 3, 4, 5];
 
-  void prepareForPlacement(Player player) {
+  void undoLastBoop(Player player) {
     if (numberOfCatsBelongingToPlayerBeforeTurnStarted != null &&
         numberOfKittensBelongingToPlayerBeforeTurnStarted != null) {
       player.kittens = List.filled(numberOfKittensBelongingToPlayerBeforeTurnStarted!, Kitten(player), growable: true);
@@ -21,7 +21,7 @@ class Board {
   }
 
   void boopCat(int row, int column, Player player) {
-    prepareForPlacement(player);
+    undoLastBoop(player);
     numberOfCatsBelongingToPlayerBeforeTurnStarted = player.cats.length;
     numberOfKittensBelongingToPlayerBeforeTurnStarted = player.kittens.length;
 
@@ -51,7 +51,7 @@ class Board {
   }
 
   void boopKitten(int row, int column, Player player) {
-    prepareForPlacement(player);
+    undoLastBoop(player);
     numberOfCatsBelongingToPlayerBeforeTurnStarted = player.cats.length;
     numberOfKittensBelongingToPlayerBeforeTurnStarted = player.kittens.length;
 
