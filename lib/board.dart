@@ -169,6 +169,30 @@ class Board {
     return true;
   }
 
+  bool listOfCoordinateContainsCoordinate(List<List<int>> coordinates, List<int> coordinate) {
+    for (List<int> item in coordinates) {
+      if (item[0] == coordinate[0] && item[1] == coordinate[1]) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  List<List<List<int>>> removeDuplicateCoordinates(List<List<List<int>>> inputList) {
+    List<List<int>> result = [];
+    // [[[1,1],[2,3],[3,3]], [[2,3],[3,3],[4,4]], [[3,3],[4,4],[5,5]]] to [[[1,1],[2,3],[3,3],[4,4],[5,5]]]
+
+    for (List<List<int>> threeInARow in inputList) {
+      for (List<int> coordinate in threeInARow) {
+        if (!listOfCoordinateContainsCoordinate(result, coordinate)) {
+          result.add(coordinate);
+        }
+      }
+    }
+
+    return [result];
+  }
+
   List<List<List<int>>> findAllThreeInARow() {
     List<List<List<int>>> allCoordinates = [];
 
@@ -242,7 +266,7 @@ class Board {
       }
     }
 
-    return allCoordinates;
+    return removeDuplicateCoordinates(allCoordinates);
   }
 
   String? checkForWin() {

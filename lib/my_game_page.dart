@@ -73,9 +73,10 @@ class _MyGamePageState extends State<MyGamePage> {
                   refreshMyGamePageState: refreshMyGamePageState,
                 ),
               ),
-              SizedBox(
-                height: screenHeight * 0.125,
-                width: gridLength,
+              Container(
+                color: Colors.brown.shade200,
+                height: screenHeight * 0.1,
+                width: gridLength * 0.8,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
