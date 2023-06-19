@@ -9,6 +9,12 @@ class Player {
   final Color color;
   Player(this.name, this.color) {
     kittens = List.filled(8, Kitten(this), growable: true);
+    // cats = [Cat(this)]; // for testing only
+  }
+
+  void reset() {
+    kittens = List.filled(8, Kitten(this), growable: true);
+    cats = [];
   }
 
   void upgradePieces(List pieces) {

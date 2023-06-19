@@ -10,6 +10,17 @@ class Board {
   // these are the coordinates that are on the grid
   List<int> validCoordinates = [0, 1, 2, 3, 4, 5];
 
+  void setUpPlayerForWinning(Player player) {
+    // this function is for testing only
+    grid[0][0] = Cat(player);
+    grid[0][1] = Cat(player);
+  }
+
+  void reset() {
+    grid = List.generate(6, (row) => List.filled(6, null));
+    tempGrid = deepCopyMatrix(grid);
+  }
+
   void undoLastBoop(Player player) {
     if (numberOfCatsBelongingToPlayerBeforeTurnStarted != null &&
         numberOfKittensBelongingToPlayerBeforeTurnStarted != null) {
@@ -32,7 +43,7 @@ class Board {
     }
 
     // return if the player is out of cats to place
-    if (player.kittens.isEmpty) {
+    if (player.cats.isEmpty) {
       print('not enough cats to place!');
       return;
     }
@@ -269,7 +280,22 @@ class Board {
     return removeDuplicateCoordinates(allCoordinates);
   }
 
+  List<Player> getPlayersWithPiecesOnBoard() {
+    List<Player> players = [];
+    for (int row = 0; row < 6; row++) {
+      for (int column = 0; column < 6; column++) {
+        if (tempGrid[row][column] == null) {
+          continue;
+        }
+        players.add(tempGrid[row][column].player);
+        if (players.length == 2) return players;
+      }
+    }
+    return players;
+  }
+
   String? checkForWin() {
+    // return 'Liam';
     int numberOfCatsInARow = 0;
     List<List<List<int>>> allThreeInARowCoordinates = findAllThreeInARow();
     for (List<List<int>> threeInARowCoordinates in allThreeInARowCoordinates) {

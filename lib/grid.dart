@@ -84,6 +84,7 @@ class _GridState extends State<Grid> {
               }
               isDragOver[row][column] = true;
             });
+            // widget.board.setUpPlayerForWinning(widget.playerOne);
             return widget.board.grid[row][column] == null;
           },
           builder: (context, candidateData, rejectedData) {

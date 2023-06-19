@@ -50,6 +50,14 @@ class _MyAppState extends State<MyApp> {
     playerOneTurn = !playerOneTurn;
   }
 
+  void startOver() {
+    widget.board.reset();
+    widget.playerOne.reset();
+    widget.playerTwo.reset();
+    winner = null;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     String playerTurn = playerOneTurn ? widget.playerOne.name : widget.playerTwo.name;
@@ -61,23 +69,26 @@ class _MyAppState extends State<MyApp> {
       ),
       home: Scaffold(
         body: MyGamePage(
-          title: "$playerTurn's Turn",
+          title: winner != null ? "$playerTurn's Turn" : 'Game Over',
           playerOne: widget.playerOne,
           playerTwo: widget.playerTwo,
           board: widget.board,
           winner: winner,
           playerOneTurn: playerOneTurn,
           alternatePlayerOneTurn: alternatePlayerOneTurn,
+          startOver: startOver,
         ),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.blue.shade400,
-          onPressed: confirmMove,
-          child: Icon(
-            Icons.check,
-            color: Colors.white,
-            size: MediaQuery.of(context).size.width * 0.08,
-          ),
-        ),
+        floatingActionButton: winner == null
+            ? FloatingActionButton(
+                backgroundColor: Colors.blue.shade400,
+                onPressed: confirmMove,
+                child: Icon(
+                  Icons.check,
+                  color: Colors.white,
+                  size: MediaQuery.of(context).size.width * 0.08,
+                ),
+              )
+            : null,
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'game_over_screen.dart';
 import 'grid.dart';
 import 'kittens_and_cats.dart';
 import 'player.dart';
@@ -14,6 +15,7 @@ class MyGamePage extends StatefulWidget {
     required this.playerOneTurn,
     this.winner,
     required this.alternatePlayerOneTurn,
+    required this.startOver,
   });
   final String title;
   final Player playerOne;
@@ -22,6 +24,7 @@ class MyGamePage extends StatefulWidget {
   final bool playerOneTurn;
   final String? winner;
   final Function alternatePlayerOneTurn;
+  final Function startOver;
 
   @override
   State<MyGamePage> createState() => _MyGamePageState();
@@ -39,7 +42,15 @@ class _MyGamePageState extends State<MyGamePage> {
   }
 
   @override
+  // ignore: dead_code
   Widget build(BuildContext context) {
+    if (widget.winner != null) {
+      return GameOverScreen(
+        winner: widget.winner!,
+        startOver: widget.startOver,
+      );
+    }
+    // ignore: dead_code
     Player activePlayer = widget.playerOneTurn ? widget.playerOne : widget.playerTwo;
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -74,7 +85,7 @@ class _MyGamePageState extends State<MyGamePage> {
                 ),
               ),
               Container(
-                color: Colors.brown.shade200,
+                color: Colors.white10,
                 height: screenHeight * 0.1,
                 width: gridLength * 0.8,
                 child: Row(
