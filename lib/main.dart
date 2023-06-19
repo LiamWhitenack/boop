@@ -9,8 +9,8 @@ void main() {
   // playGame();
   runApp(MyApp(
     board: Board(),
-    playerOne: Player('Ralph', Colors.orange),
-    playerTwo: Player('Jack', Colors.grey),
+    playerOne: Player('Maire', Colors.orange),
+    playerTwo: Player('Emily', Colors.grey),
   ));
 }
 

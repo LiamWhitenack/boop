@@ -12,8 +12,15 @@ class Board {
 
   void setUpPlayerForWinning(Player player) {
     // this function is for testing only
+
     grid[0][0] = Cat(player);
     grid[0][1] = Cat(player);
+    grid[2][0] = Cat(player);
+    grid[2][1] = Cat(player);
+    grid[4][0] = Cat(player);
+    grid[4][1] = Cat(player);
+    grid[5][5] = Cat(player);
+    // grid[1][3] = Cat(player);
   }
 
   void reset() {
@@ -287,16 +294,74 @@ class Board {
         if (tempGrid[row][column] == null) {
           continue;
         }
-        players.add(tempGrid[row][column].player);
+        if (!players.contains(tempGrid[row][column].player)) {
+          players.add(tempGrid[row][column].player);
+        }
+
         if (players.length == 2) return players;
       }
     }
     return players;
   }
 
+  String? eightCatsOnGrid() {
+    List<Player> players = getPlayersWithPiecesOnBoard();
+    if (players.isEmpty) return null;
+    if (players.length == 1) {
+      Player player1 = players[0];
+      bool player1HasKittens = player1.kittens.isNotEmpty;
+      bool player1HasCats = player1.cats.isNotEmpty;
+      if (player1HasKittens || player1HasCats) {
+        return null;
+      } else {
+        return doesPlayerHaveEightCatsOnGrid(player1) ? player1.name : null;
+      }
+    }
+    Player player1 = players[0];
+    Player player2 = players[1];
+    bool player1HasKittens = player1.kittens.isNotEmpty;
+    bool player1HasCats = player1.cats.isNotEmpty;
+    bool player2HasKittens = player2.kittens.isNotEmpty;
+    bool player2HasCats = player2.cats.isNotEmpty;
+    if ((player1HasKittens || player1HasCats) && (player2HasKittens || player2HasCats)) {
+      return null;
+    } else if (player1HasKittens || player1HasCats) {
+      return doesPlayerHaveEightCatsOnGrid(player2) ? player2.name : null;
+    } else if (player2HasKittens || player2HasCats) {
+      return doesPlayerHaveEightCatsOnGrid(player1) ? player1.name : null;
+    }
+    // this shouldn't EVER happen
+    return null;
+  }
+
+  bool doesPlayerHaveEightCatsOnGrid(Player player) {
+    int numberOfCats = 0;
+    for (int row = 0; row < 6; row++) {
+      for (int column = 0; column < 6; column++) {
+        var cell = tempGrid[row][column];
+        if (cell == null) {
+          continue;
+        }
+        if (cell is Kitten) {
+          return false;
+        } else if (cell is Cat) {
+          numberOfCats++;
+          if (numberOfCats == 8) {
+            return true;
+          }
+        }
+      }
+    }
+    // this shouldn't ever happen
+    return false;
+  }
+
   String? checkForWin() {
-    // return 'Liam';
     int numberOfCatsInARow = 0;
+    String? winnerFromHavingEightCats = eightCatsOnGrid();
+    if (winnerFromHavingEightCats != null) {
+      return winnerFromHavingEightCats;
+    }
     List<List<List<int>>> allThreeInARowCoordinates = findAllThreeInARow();
     for (List<List<int>> threeInARowCoordinates in allThreeInARowCoordinates) {
       for (List<int> coordinate in threeInARowCoordinates) {

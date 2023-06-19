@@ -92,25 +92,46 @@ class _MyGamePageState extends State<MyGamePage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // cats
-                    activePlayer.cats.isNotEmpty
-                        // true
-                        ? Draggable<String>(
-                            data: 'Cat',
-                            feedback: CatWidget(catColor: activePlayer.color),
-                            child: CatWidget(catColor: activePlayer.color))
-                        : const SizedBox(),
+                    SizedBox(
+                      // color: Colors.black,
+                      width: activePlayer.cats.isNotEmpty ? gridLength * 0.25 : 0,
+                      child: activePlayer.cats.isNotEmpty
+                          // true
+                          ? Row(
+                              children: [
+                                Draggable<String>(
+                                    data: 'Cat',
+                                    feedback: CatWidget(catColor: activePlayer.color),
+                                    child: CatWidget(catColor: activePlayer.color)),
+                                Text('x${activePlayer.cats.length}'),
+                              ],
+                            )
+                          : const SizedBox(),
+                    ),
                     // space between
                     activePlayer.cats.isNotEmpty && activePlayer.kittens.isNotEmpty
                         ? SizedBox(width: gridLength * 0.3)
                         : const SizedBox(),
                     // kittens
-                    activePlayer.kittens.isNotEmpty
-                        ? Draggable<String>(
-                            data: 'Kitten',
-                            feedback: KittenWidget(kittenColor: activePlayer.color),
-                            child: KittenWidget(kittenColor: activePlayer.color),
-                          )
-                        : const SizedBox(),
+                    Container(
+                      width: activePlayer.kittens.isNotEmpty ? gridLength * 0.25 : 0,
+                      child: activePlayer.kittens.isNotEmpty
+                          ? Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Draggable<String>(
+                                  data: 'Kitten',
+                                  feedback: KittenWidget(kittenColor: activePlayer.color),
+                                  child: KittenWidget(kittenColor: activePlayer.color),
+                                ),
+                                Text(
+                                  'x${activePlayer.kittens.length}',
+                                  style: TextStyle(color: Colors.blue.shade400),
+                                ),
+                              ],
+                            )
+                          : const SizedBox(),
+                    ),
                   ],
                 ),
               ),
