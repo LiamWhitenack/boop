@@ -52,15 +52,16 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    String playerTurn = playerOneTurn ? widget.playerOne.name : widget.playerTwo.name;
     return MaterialApp(
       title: 'Boop.',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue.shade200),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue.shade400),
         useMaterial3: true,
       ),
       home: Scaffold(
         body: MyGamePage(
-          title: 'Boop.',
+          title: "$playerTurn's Turn",
           playerOne: widget.playerOne,
           playerTwo: widget.playerTwo,
           board: widget.board,
@@ -69,11 +70,12 @@ class _MyAppState extends State<MyApp> {
           alternatePlayerOneTurn: alternatePlayerOneTurn,
         ),
         floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.blue.shade200,
+          backgroundColor: Colors.blue.shade400,
           onPressed: confirmMove,
-          child: const Icon(
+          child: Icon(
             Icons.check,
             color: Colors.white,
+            size: MediaQuery.of(context).size.width * 0.08,
           ),
         ),
       ),

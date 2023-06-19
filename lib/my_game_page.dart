@@ -47,57 +47,63 @@ class _MyGamePageState extends State<MyGamePage> {
     final double gridLength = limitingSize == screenWidth ? screenWidth * 0.95 : limitingSize * 0.65;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        backgroundColor: Colors.blue.shade400,
+        foregroundColor: Colors.white,
+        title: Text(
+          widget.title,
+          style: const TextStyle(fontSize: 25),
+        ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            // SizedBox(height: screenHeight * 0.08),
-            SizedBox(
-              height: gridLength,
-              width: gridLength,
-              child: Grid(
-                board: widget.board,
-                playerOne: widget.playerOne,
-                playerTwo: widget.playerTwo,
-                playerOneTurn: widget.playerOneTurn,
-                winner: widget.winner,
-                alternatePlayerOneTurn: widget.alternatePlayerOneTurn,
-                refreshMyGamePageState: refreshMyGamePageState,
+      body: Container(
+        color: Colors.blue.shade50,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              SizedBox(
+                height: gridLength,
+                width: gridLength,
+                child: Grid(
+                  board: widget.board,
+                  playerOne: widget.playerOne,
+                  playerTwo: widget.playerTwo,
+                  playerOneTurn: widget.playerOneTurn,
+                  winner: widget.winner,
+                  alternatePlayerOneTurn: widget.alternatePlayerOneTurn,
+                  refreshMyGamePageState: refreshMyGamePageState,
+                ),
               ),
-            ),
-            SizedBox(
-              height: screenHeight * 0.125,
-              width: gridLength,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // cats
-                  activePlayer.cats.isNotEmpty
-                      // true
-                      ? Draggable<String>(
-                          data: 'Cat',
-                          feedback: CatWidget(catColor: activePlayer.color),
-                          child: CatWidget(catColor: activePlayer.color))
-                      : const SizedBox(),
-                  // space between
-                  activePlayer.cats.isNotEmpty && activePlayer.kittens.isNotEmpty
-                      ? SizedBox(width: gridLength * 0.3)
-                      : const SizedBox(),
-                  // kittens
-                  activePlayer.kittens.isNotEmpty
-                      ? Draggable<String>(
-                          data: 'Kitten',
-                          feedback: KittenWidget(kittenColor: activePlayer.color),
-                          child: KittenWidget(kittenColor: activePlayer.color),
-                        )
-                      : const SizedBox(),
-                ],
+              SizedBox(
+                height: screenHeight * 0.125,
+                width: gridLength,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // cats
+                    activePlayer.cats.isNotEmpty
+                        // true
+                        ? Draggable<String>(
+                            data: 'Cat',
+                            feedback: CatWidget(catColor: activePlayer.color),
+                            child: CatWidget(catColor: activePlayer.color))
+                        : const SizedBox(),
+                    // space between
+                    activePlayer.cats.isNotEmpty && activePlayer.kittens.isNotEmpty
+                        ? SizedBox(width: gridLength * 0.3)
+                        : const SizedBox(),
+                    // kittens
+                    activePlayer.kittens.isNotEmpty
+                        ? Draggable<String>(
+                            data: 'Kitten',
+                            feedback: KittenWidget(kittenColor: activePlayer.color),
+                            child: KittenWidget(kittenColor: activePlayer.color),
+                          )
+                        : const SizedBox(),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

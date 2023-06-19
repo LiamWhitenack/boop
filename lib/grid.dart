@@ -44,7 +44,7 @@ class _GridState extends State<Grid> {
   @override
   Widget build(BuildContext context) {
     if (widget.winner != null) {
-      return Text('$widget.winner wins!');
+      return Text('${widget.winner} wins!');
     }
 
     Player activePlayer = widget.playerOneTurn ? widget.playerOne : widget.playerTwo;
@@ -96,7 +96,7 @@ class _GridState extends State<Grid> {
             return Container(
               decoration: BoxDecoration(
                 color: cellColor,
-                border: Border.all(color: Colors.white, width: 2),
+                border: Border.all(color: Colors.white60, width: 2),
               ),
               child: cellContents,
             );
