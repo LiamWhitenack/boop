@@ -31,11 +31,12 @@ class CatWidget extends StatelessWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
     final double limitingSize = screenHeight > screenWidth ? screenWidth : screenHeight;
+    final double gridLength = limitingSize == screenWidth ? screenWidth * 0.95 : limitingSize * 0.65;
     return Center(
       child: Container(
         color: catColor,
-        height: limitingSize * 0.075,
-        width: limitingSize * 0.075,
+        height: gridLength * 0.125,
+        width: gridLength * 0.125,
       ),
     );
   }
@@ -53,8 +54,9 @@ class KittenWidget extends StatelessWidget {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double screenWidth = MediaQuery.of(context).size.width;
     final double limitingSize = screenHeight > screenWidth ? screenWidth : screenHeight;
+    final double gridLength = limitingSize == screenWidth ? screenWidth * 0.95 : limitingSize * 0.65;
     return Center(
-      child: Icon(Icons.circle, color: kittenColor, size: limitingSize * 0.075),
+      child: Icon(Icons.circle, color: kittenColor, size: gridLength * 0.125),
     );
   }
 }

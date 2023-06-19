@@ -44,6 +44,7 @@ class _MyGamePageState extends State<MyGamePage> {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
     final double limitingSize = screenHeight > screenWidth ? screenWidth : screenHeight;
+    final double gridLength = limitingSize == screenWidth ? screenWidth * 0.95 : limitingSize * 0.65;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -51,11 +52,12 @@ class _MyGamePageState extends State<MyGamePage> {
       ),
       body: Center(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            SizedBox(height: screenHeight * 0.08),
+            // SizedBox(height: screenHeight * 0.08),
             SizedBox(
-              height: limitingSize * 0.65,
-              width: limitingSize * 0.65,
+              height: gridLength,
+              width: gridLength,
               child: Grid(
                 board: widget.board,
                 playerOne: widget.playerOne,
@@ -68,7 +70,7 @@ class _MyGamePageState extends State<MyGamePage> {
             ),
             SizedBox(
               height: screenHeight * 0.125,
-              width: limitingSize * 0.7,
+              width: gridLength,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -82,7 +84,7 @@ class _MyGamePageState extends State<MyGamePage> {
                       : const SizedBox(),
                   // space between
                   activePlayer.cats.isNotEmpty && activePlayer.kittens.isNotEmpty
-                      ? SizedBox(width: limitingSize * 0.2)
+                      ? SizedBox(width: gridLength * 0.3)
                       : const SizedBox(),
                   // kittens
                   activePlayer.kittens.isNotEmpty

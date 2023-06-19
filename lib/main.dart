@@ -60,7 +60,7 @@ class _MyAppState extends State<MyApp> {
       ),
       home: Scaffold(
         body: MyGamePage(
-          title: 'Boop. Game',
+          title: 'Boop.',
           playerOne: widget.playerOne,
           playerTwo: widget.playerTwo,
           board: widget.board,
@@ -69,6 +69,7 @@ class _MyAppState extends State<MyApp> {
           alternatePlayerOneTurn: alternatePlayerOneTurn,
         ),
         floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.blue.shade200,
           onPressed: confirmMove,
           child: const Icon(
             Icons.check,
