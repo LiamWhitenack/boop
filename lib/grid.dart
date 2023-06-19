@@ -1,4 +1,3 @@
-import 'package:boop/kittens_and_cats.dart';
 import 'package:boop/player.dart';
 import 'package:flutter/material.dart';
 
@@ -11,13 +10,19 @@ class Grid extends StatefulWidget {
   final Player playerOne;
   final Player playerTwo;
   final Function refreshMyGamePageState;
+  final Function alternatePlayerOneTurn;
+  final bool playerOneTurn;
+  final String? winner;
 
-  Grid({
+  const Grid({
     super.key,
     required this.board,
     required this.playerOne,
     required this.playerTwo,
     required this.refreshMyGamePageState,
+    required this.alternatePlayerOneTurn,
+    required this.playerOneTurn,
+    required this.winner,
   });
 
   @override
@@ -26,8 +31,6 @@ class Grid extends StatefulWidget {
 
 class _GridState extends State<Grid> {
   List<List<bool>> isDragOver = List.generate(6, (row) => List.filled(6, true));
-  String? winner;
-  bool playerOneTurn = true;
   Color getCellColor(int row, int column) {
     // if (row == placementRow && column == placementColumn) {
     //   return Colors.blue.shade200;
@@ -40,11 +43,11 @@ class _GridState extends State<Grid> {
 
   @override
   Widget build(BuildContext context) {
-    if (winner != null) {
-      return Text('$winner wins!');
+    if (widget.winner != null) {
+      return Text('$widget.winner wins!');
     }
 
-    Player activePlayer = playerOneTurn ? widget.playerOne : widget.playerTwo;
+    Player activePlayer = widget.playerOneTurn ? widget.playerOne : widget.playerTwo;
 
     return GridView.builder(
       itemCount: 36,
@@ -57,18 +60,8 @@ class _GridState extends State<Grid> {
         Color cellColor = getCellColor(row, column);
         return DragTarget<String>(
           onAccept: (value) {
-            widget.board.updateGrid();
-            if (widget.board.checkForWin() != null) {
-              winner = widget.board.checkForWin();
-            }
-
-            widget.board.upgradeThreeInARows();
-
-            playerOneTurn = !playerOneTurn;
-
             isDragOver[row][column] = false;
             setState(() {});
-            widget.refreshMyGamePageState();
           },
           onLeave: (value) {
             setState(() {

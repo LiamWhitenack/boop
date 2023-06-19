@@ -11,36 +11,36 @@ class MyGamePage extends StatefulWidget {
     required this.playerOne,
     required this.playerTwo,
     required this.board,
+    required this.playerOneTurn,
+    this.winner,
+    required this.alternatePlayerOneTurn,
   });
   final String title;
   final Player playerOne;
   final Player playerTwo;
   final Board board;
+  final bool playerOneTurn;
+  final String? winner;
+  final Function alternatePlayerOneTurn;
 
   @override
   State<MyGamePage> createState() => _MyGamePageState();
 }
 
 class _MyGamePageState extends State<MyGamePage> {
-  // used to alternate turns
-  bool playerOneTurn = true;
-
-  // this variable is null if there is no winner yet, else their name
-  String? winner;
-
   // these are user inputs
   String? pieceType;
   int? row;
   int? column;
 
   void refreshMyGamePageState() {
-    playerOneTurn = !playerOneTurn;
+    widget.alternatePlayerOneTurn();
     setState(() {});
   }
 
   @override
   Widget build(BuildContext context) {
-    Player activePlayer = playerOneTurn ? widget.playerOne : widget.playerTwo;
+    Player activePlayer = widget.playerOneTurn ? widget.playerOne : widget.playerTwo;
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
     final double limitingSize = screenHeight > screenWidth ? screenWidth : screenHeight;
@@ -52,20 +52,23 @@ class _MyGamePageState extends State<MyGamePage> {
       body: Center(
         child: Column(
           children: [
-            SizedBox(height: screenHeight / 20),
+            SizedBox(height: screenHeight * 0.08),
             SizedBox(
-              height: limitingSize / 1.5,
-              width: limitingSize / 1.5,
+              height: limitingSize * 0.65,
+              width: limitingSize * 0.65,
               child: Grid(
                 board: widget.board,
                 playerOne: widget.playerOne,
                 playerTwo: widget.playerTwo,
+                playerOneTurn: widget.playerOneTurn,
+                winner: widget.winner,
+                alternatePlayerOneTurn: widget.alternatePlayerOneTurn,
                 refreshMyGamePageState: refreshMyGamePageState,
               ),
             ),
             SizedBox(
-              height: screenHeight / 8,
-              width: limitingSize / 1.5,
+              height: screenHeight * 0.125,
+              width: limitingSize * 0.7,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -79,7 +82,7 @@ class _MyGamePageState extends State<MyGamePage> {
                       : const SizedBox(),
                   // space between
                   activePlayer.cats.isNotEmpty && activePlayer.kittens.isNotEmpty
-                      ? const SizedBox(width: 100)
+                      ? SizedBox(width: limitingSize * 0.2)
                       : const SizedBox(),
                   // kittens
                   activePlayer.kittens.isNotEmpty
