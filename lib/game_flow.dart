@@ -24,6 +24,14 @@ String? takeTurn(Board board, Player player1, String pieceType, int row, int col
   }
 
   board.upgradeThreeInARows();
+  List<Player> players = board.getPlayers();
+  for (Player player in players) {
+    if (player.tempCats.length + player.tempKittens.length > 8) {
+      throw Exception();
+    }
+    player.updateKittensAndCats();
+  }
+
   return null;
 }
 
@@ -31,7 +39,7 @@ void playGame() {
   Player ralph = Player('Ralph', Colors.orange);
   Player jack = Player('Jack', Colors.orange);
 
-  Board board = Board();
+  Board board = Board(ralph, jack);
 
   bool playerOneTurn = true;
 

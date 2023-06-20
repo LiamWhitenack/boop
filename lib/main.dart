@@ -6,11 +6,13 @@ import 'board.dart';
 import 'my_game_page.dart';
 
 void main() {
+  Player playerOne = Player('Maire', Colors.orange);
+  Player playerTwo = Player('Emily', Colors.grey);
   // playGame();
   runApp(MyApp(
-    board: Board(),
-    playerOne: Player('Maire', Colors.orange),
-    playerTwo: Player('Emily', Colors.grey),
+    board: Board(playerOne, playerTwo),
+    playerOne: playerOne,
+    playerTwo: playerTwo,
   ));
 }
 
@@ -41,6 +43,9 @@ class _MyAppState extends State<MyApp> {
     winner = widget.board.checkForWin();
 
     widget.board.upgradeThreeInARows();
+
+    widget.board.playerOne.updateKittensAndCats();
+    widget.board.playerTwo.updateKittensAndCats();
 
     alternatePlayerOneTurn();
     setState(() {});

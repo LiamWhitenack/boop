@@ -70,22 +70,23 @@ class _GridState extends State<Grid> {
             });
           },
           onWillAccept: (value) {
-            setState(() {
-              if (widget.playerOne.kittens.isEmpty &&
-                  widget.playerTwo.cats.isEmpty &&
-                  widget.playerOne.cats.isEmpty &&
-                  widget.playerTwo.kittens.isEmpty) {
-                throw Exception('All out of pieces to place!');
-              }
-              if (value == 'Kitten') {
-                widget.board.boopKitten(row, column, activePlayer);
-              } else if (value == 'Cat') {
-                widget.board.boopCat(row, column, activePlayer);
-              }
-              isDragOver[row][column] = true;
-            });
+            if (widget.playerOne.tempKittens.isEmpty &&
+                widget.playerTwo.tempCats.isEmpty &&
+                widget.playerOne.tempCats.isEmpty &&
+                widget.playerTwo.tempKittens.isEmpty) {
+              throw Exception('All out of pieces to place!');
+            }
+            if (value == 'Kitten') {
+              widget.board.boopKitten(row, column, activePlayer);
+            } else if (value == 'Cat') {
+              widget.board.boopCat(row, column, activePlayer);
+            }
+            isDragOver[row][column] = true;
+
             // testing only
             // widget.board.setUpPlayerForWinning(widget.playerOne);
+
+            widget.refreshMyGamePageState();
             return widget.board.grid[row][column] == null;
           },
           builder: (context, candidateData, rejectedData) {

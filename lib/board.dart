@@ -7,6 +7,9 @@ class Board {
   late List<List> tempGrid = deepCopyMatrix(grid);
   // these are the coordinates that are on the grid
   List<int> validCoordinates = [0, 1, 2, 3, 4, 5];
+  Player playerOne;
+  Player playerTwo;
+  Board(this.playerOne, this.playerTwo);
 
   void setUpPlayerForWinning(Player player) {
     // this function is for testing only
@@ -27,11 +30,10 @@ class Board {
   }
 
   void undoLastBoop() {
-    for (Player player in getPlayersWithPiecesOnBoard()) {
+    for (Player player in getPlayers()) {
       player.revertKittensAndCats();
-
-      tempGrid = deepCopyMatrix(grid);
     }
+    tempGrid = deepCopyMatrix(grid);
   }
 
   void boopCat(int row, int column, Player player) {
@@ -44,7 +46,7 @@ class Board {
     }
 
     // return if the player is out of cats to place
-    if (player.cats.isEmpty) {
+    if (player.tempCats.isEmpty) {
       print('not enough cats to place!');
       return;
     }
@@ -58,8 +60,10 @@ class Board {
       }
     }
 
-    player.cats.removeAt(0);
+    player.tempCats.removeAt(0);
     tempGrid[row][column] = Cat(player);
+
+    upgradeThreeInARows();
   }
 
   void boopKitten(int row, int column, Player player) {
@@ -87,8 +91,10 @@ class Board {
     }
 
     // print("64");
-    player.kittens.removeAt(0);
+    player.tempKittens.removeAt(0);
     tempGrid[row][column] = Kitten(player);
+
+    upgradeThreeInARows();
   }
 
   void boopCatInGivenDirection(int row, int column, int i, int j, Player player) {
@@ -99,10 +105,10 @@ class Board {
       // if the piece is being moved off the edge, give it back to its owner
       if (!validCoordinates.contains(row + i + i) || !validCoordinates.contains(column + j + j)) {
         if (grid[row + i][column + j] is Kitten) {
-          ownerOfBoopedPiece!.kittens.add(Kitten(ownerOfBoopedPiece));
+          ownerOfBoopedPiece!.tempKittens.add(Kitten(ownerOfBoopedPiece));
           // numberOfKittensToReturnIfMoveIsTakenBack++;
         } else {
-          ownerOfBoopedPiece!.cats.add(Cat(ownerOfBoopedPiece));
+          ownerOfBoopedPiece!.tempCats.add(Cat(ownerOfBoopedPiece));
           // numberOfCatsToReturnIfMoveIsTakenBack++;
         }
 
@@ -133,7 +139,7 @@ class Board {
       ownerOfBoopedPiece = grid[row + i][column + j].player;
       // if the kitten is being moved off the edge, give it back to its owner
       if (!validCoordinates.contains(row + i + i) || !validCoordinates.contains(column + j + j)) {
-        ownerOfBoopedPiece!.kittens.add(Kitten(ownerOfBoopedPiece));
+        ownerOfBoopedPiece!.tempKittens.add(Kitten(ownerOfBoopedPiece));
         // numberOfKittensToReturnIfMoveIsTakenBack++;
 
         tempGrid[row + i][column + j] = null;
@@ -155,13 +161,6 @@ class Board {
   }
 
   void updateGrid() {
-    List<Player> players = getPlayersWithPiecesOnBoard();
-    for (Player player in players) {
-      if (player.cats.length + player.kittens.length > 8) {
-        throw Exception();
-      }
-      player.updateKittensAndCats();
-    }
     grid = deepCopyMatrix(tempGrid);
   }
 
@@ -284,30 +283,17 @@ class Board {
     return removeDuplicateCoordinates(allCoordinates);
   }
 
-  List<Player> getPlayersWithPiecesOnBoard() {
-    List<Player> players = [];
-    for (int row = 0; row < 6; row++) {
-      for (int column = 0; column < 6; column++) {
-        if (tempGrid[row][column] == null) {
-          continue;
-        }
-        if (!players.contains(tempGrid[row][column].player)) {
-          players.add(tempGrid[row][column].player);
-        }
-
-        if (players.length == 2) return players;
-      }
-    }
-    return players;
+  List<Player> getPlayers() {
+    return [playerOne, playerTwo];
   }
 
   String? eightCatsOnGrid() {
-    List<Player> players = getPlayersWithPiecesOnBoard();
+    List<Player> players = getPlayers();
     if (players.isEmpty) return null;
     if (players.length == 1) {
       Player player1 = players[0];
-      bool player1HasKittens = player1.kittens.isNotEmpty;
-      bool player1HasCats = player1.cats.isNotEmpty;
+      bool player1HasKittens = player1.tempKittens.isNotEmpty;
+      bool player1HasCats = player1.tempCats.isNotEmpty;
       if (player1HasKittens || player1HasCats) {
         return null;
       } else {
@@ -316,10 +302,10 @@ class Board {
     }
     Player player1 = players[0];
     Player player2 = players[1];
-    bool player1HasKittens = player1.kittens.isNotEmpty;
-    bool player1HasCats = player1.cats.isNotEmpty;
-    bool player2HasKittens = player2.kittens.isNotEmpty;
-    bool player2HasCats = player2.cats.isNotEmpty;
+    bool player1HasKittens = player1.tempKittens.isNotEmpty;
+    bool player1HasCats = player1.tempCats.isNotEmpty;
+    bool player2HasKittens = player2.tempKittens.isNotEmpty;
+    bool player2HasCats = player2.tempCats.isNotEmpty;
     if ((player1HasKittens || player1HasCats) && (player2HasKittens || player2HasCats)) {
       return null;
     } else if (player1HasKittens || player1HasCats) {
@@ -384,10 +370,10 @@ class Board {
         int row = coordinates[0];
         int column = coordinates[1];
 
-        grid[row][column].player.cats.add(Cat(grid[row][column].player));
-        grid[row][column] = null;
+        tempGrid[row][column].player.tempCats.add(Cat(grid[row][column].player));
+        tempGrid[row][column] = null;
       }
     }
-    tempGrid = deepCopyMatrix(grid);
+    // tempGrid = deepCopyMatrix(grid);
   }
 }
