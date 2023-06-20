@@ -65,7 +65,7 @@ class _GridState extends State<Grid> {
           },
           onLeave: (value) {
             setState(() {
-              widget.board.undoLastBoop(activePlayer);
+              widget.board.undoLastBoop();
               isDragOver[row][column] = false;
             });
           },

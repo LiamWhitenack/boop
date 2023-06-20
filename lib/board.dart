@@ -5,8 +5,6 @@ import 'general_functions.dart';
 class Board {
   List<List> grid = List.generate(6, (row) => List.filled(6, null));
   late List<List> tempGrid = deepCopyMatrix(grid);
-  int? numberOfKittensBelongingToPlayerBeforeTurnStarted;
-  int? numberOfCatsBelongingToPlayerBeforeTurnStarted;
   // these are the coordinates that are on the grid
   List<int> validCoordinates = [0, 1, 2, 3, 4, 5];
 
@@ -28,20 +26,16 @@ class Board {
     tempGrid = deepCopyMatrix(grid);
   }
 
-  void undoLastBoop(Player player) {
-    if (numberOfCatsBelongingToPlayerBeforeTurnStarted != null &&
-        numberOfKittensBelongingToPlayerBeforeTurnStarted != null) {
-      player.kittens = List.filled(numberOfKittensBelongingToPlayerBeforeTurnStarted!, Kitten(player), growable: true);
-      player.cats = List.filled(numberOfCatsBelongingToPlayerBeforeTurnStarted!, Cat(player), growable: true);
+  void undoLastBoop() {
+    for (Player player in getPlayersWithPiecesOnBoard()) {
+      player.revertKittensAndCats();
 
       tempGrid = deepCopyMatrix(grid);
     }
   }
 
   void boopCat(int row, int column, Player player) {
-    undoLastBoop(player);
-    numberOfCatsBelongingToPlayerBeforeTurnStarted = player.cats.length;
-    numberOfKittensBelongingToPlayerBeforeTurnStarted = player.kittens.length;
+    undoLastBoop();
 
     // return if the piece isn't placed on an open spot
     if (grid[row][column] != null) {
@@ -69,9 +63,7 @@ class Board {
   }
 
   void boopKitten(int row, int column, Player player) {
-    undoLastBoop(player);
-    numberOfCatsBelongingToPlayerBeforeTurnStarted = player.cats.length;
-    numberOfKittensBelongingToPlayerBeforeTurnStarted = player.kittens.length;
+    undoLastBoop();
 
     // return if the piece isn't placed on an open spot
     if (grid[row][column] != null) {
@@ -107,10 +99,10 @@ class Board {
       // if the piece is being moved off the edge, give it back to its owner
       if (!validCoordinates.contains(row + i + i) || !validCoordinates.contains(column + j + j)) {
         if (grid[row + i][column + j] is Kitten) {
-          player.kittens.add(Kitten(ownerOfBoopedPiece!));
+          ownerOfBoopedPiece!.kittens.add(Kitten(ownerOfBoopedPiece));
           // numberOfKittensToReturnIfMoveIsTakenBack++;
         } else {
-          player.cats.add(Cat(ownerOfBoopedPiece!));
+          ownerOfBoopedPiece!.cats.add(Cat(ownerOfBoopedPiece));
           // numberOfCatsToReturnIfMoveIsTakenBack++;
         }
 
@@ -141,7 +133,7 @@ class Board {
       ownerOfBoopedPiece = grid[row + i][column + j].player;
       // if the kitten is being moved off the edge, give it back to its owner
       if (!validCoordinates.contains(row + i + i) || !validCoordinates.contains(column + j + j)) {
-        player.kittens.add(Kitten(ownerOfBoopedPiece!));
+        ownerOfBoopedPiece!.kittens.add(Kitten(ownerOfBoopedPiece));
         // numberOfKittensToReturnIfMoveIsTakenBack++;
 
         tempGrid[row + i][column + j] = null;
@@ -163,9 +155,14 @@ class Board {
   }
 
   void updateGrid() {
+    List<Player> players = getPlayersWithPiecesOnBoard();
+    for (Player player in players) {
+      if (player.cats.length + player.kittens.length > 8) {
+        throw Exception();
+      }
+      player.updateKittensAndCats();
+    }
     grid = deepCopyMatrix(tempGrid);
-    numberOfCatsBelongingToPlayerBeforeTurnStarted = null;
-    numberOfKittensBelongingToPlayerBeforeTurnStarted = null;
   }
 
   bool checkIfAllPiecesBelongToTheSamePlayer(List<List<int>> coordinates) {

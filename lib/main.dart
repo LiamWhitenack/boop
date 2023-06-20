@@ -60,6 +60,10 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double limitingSize = screenHeight > screenWidth ? screenWidth : screenHeight;
+    final double gridLength = limitingSize == screenWidth ? screenWidth * 0.95 : limitingSize * 0.65;
     String playerTurn = playerOneTurn ? widget.playerOne.name : widget.playerTwo.name;
     return MaterialApp(
       title: 'Boop.',
@@ -69,7 +73,7 @@ class _MyAppState extends State<MyApp> {
       ),
       home: Scaffold(
         body: MyGamePage(
-          title: winner != null ? "$playerTurn's Turn" : 'Game Over',
+          title: winner == null ? "$playerTurn's Turn" : 'Game Over',
           playerOne: widget.playerOne,
           playerTwo: widget.playerTwo,
           board: widget.board,
@@ -85,7 +89,7 @@ class _MyAppState extends State<MyApp> {
                 child: Icon(
                   Icons.check,
                   color: Colors.white,
-                  size: MediaQuery.of(context).size.width * 0.08,
+                  size: gridLength * 0.1,
                 ),
               )
             : null,
