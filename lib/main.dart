@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> {
     // this will usually return null, otherwise winning player's name
     winner = widget.board.checkForWin();
 
-    widget.board.upgradeThreeInARows();
+    // widget.board.upgradeThreeInARows();
 
     widget.board.playerOne.updateKittensAndCats();
     widget.board.playerTwo.updateKittensAndCats();

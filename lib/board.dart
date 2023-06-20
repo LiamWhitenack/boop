@@ -370,7 +370,7 @@ class Board {
         int row = coordinates[0];
         int column = coordinates[1];
 
-        tempGrid[row][column].player.tempCats.add(Cat(grid[row][column].player));
+        tempGrid[row][column].player.tempCats.add(Cat(tempGrid[row][column].player));
         tempGrid[row][column] = null;
       }
     }
