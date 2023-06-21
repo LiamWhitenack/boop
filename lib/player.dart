@@ -12,8 +12,8 @@ class Player {
   Player(this.name, this.color) {
     kittens = List.filled(8, Kitten(this), growable: true);
     tempKittens = List.filled(8, Kitten(this), growable: true);
-    cats = [Cat(this)]; // for testing only
-    tempCats = [Cat(this)];
+    // cats = [Cat(this)]; // for testing only
+    // tempCats = [Cat(this)];
   }
 
   void reset() {

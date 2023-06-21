@@ -37,10 +37,9 @@ class _MyAppState extends State<MyApp> {
   bool playerOneTurn = true;
 
   void confirmMove() {
-    widget.board.updateGrid();
-
     // this will usually return null, otherwise winning player's name
     winner = widget.board.checkForWin();
+    widget.board.updateGrid();
 
     // widget.board.upgradeThreeInARows();
 
@@ -73,9 +72,9 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'Boop.',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue.shade400),
-        useMaterial3: true,
-      ),
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue.shade400),
+          useMaterial3: true,
+          fontFamily: "Permanent-Marker"),
       home: Scaffold(
         body: MyGamePage(
           title: winner == null ? "$playerTurn's Turn" : 'Game Over',

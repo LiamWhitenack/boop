@@ -36,15 +36,15 @@ class CatWidget extends StatelessWidget {
       child: Stack(
         alignment: AlignmentDirectional.center,
         children: [
-          Container(
-            color: Colors.white38,
-            height: gridLength * 0.125,
-            width: gridLength * 0.125,
-          ),
+          // Container(
+          //   color: Colors.white38,
+          //   height: gridLength * 0.125,
+          //   width: gridLength * 0.125,
+          // ),
           Container(
             color: catColor,
-            height: gridLength * 0.1,
-            width: gridLength * 0.1,
+            height: gridLength * 0.125,
+            width: gridLength * 0.125,
           ),
         ],
       ),
@@ -69,11 +69,11 @@ class KittenWidget extends StatelessWidget {
       child: Stack(
         alignment: AlignmentDirectional.center,
         children: [
-          Icon(Icons.circle, color: Colors.white38, size: gridLength * 0.125),
+          // Icon(Icons.circle, color: Colors.white38, size: gridLength * 0.125),
           Icon(
             Icons.circle,
             color: kittenColor,
-            size: gridLength * 0.1,
+            size: gridLength * 0.125,
           ),
         ],
       ),

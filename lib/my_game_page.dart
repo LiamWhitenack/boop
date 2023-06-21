@@ -74,51 +74,49 @@ class _MyGamePageState extends State<MyGamePage> {
             children: [
               // cats
               SizedBox(
-                // color: Colors.black,
-                width: otherPlayer.tempCats.isNotEmpty ? gridLength * 0.35 : 0,
-                child: otherPlayer.tempCats.isNotEmpty
-                    // true
-                    ? Row(
-                        children: [
-                          Draggable<String>(
-                              onDragStarted: () {
-                                setState(() {});
-                              },
-                              data: 'Cat',
-                              feedback: CatWidget(catColor: otherPlayer.color),
-                              child: CatWidget(catColor: otherPlayer.color)),
-                          Text('tempCats: ${otherPlayer.tempCats.length}\ncats: ${otherPlayer.cats.length}'),
-                        ],
-                      )
-                    : const SizedBox(),
-              ),
-              // space between
-              otherPlayer.tempCats.isNotEmpty && otherPlayer.tempKittens.isNotEmpty
-                  ? SizedBox(width: gridLength * 0.1)
-                  : const SizedBox(),
-              // tempKittens
-              // ignore: sized_box_for_whitespace
-              Container(
-                width: otherPlayer.tempKittens.isNotEmpty ? gridLength * 0.35 : 0,
-                child: otherPlayer.tempKittens.isNotEmpty
-                    ? Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Draggable<String>(
-                            onDragStarted: () {
-                              setState(() {});
-                            },
-                            data: 'Kitten',
-                            feedback: KittenWidget(kittenColor: otherPlayer.color),
-                            child: KittenWidget(kittenColor: otherPlayer.color),
-                          ),
-                          Text(
-                            'tempKittens: ${otherPlayer.tempKittens.length}\nkittens: ${otherPlayer.tempKittens.length}',
-                            // style: TextStyle(color: Colors.blue.shade400),
-                          ),
-                        ],
-                      )
-                    : const SizedBox(),
+                width: gridLength,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      // color: Colors.black,
+                      width: otherPlayer.tempCats.isNotEmpty ? gridLength * 0.35 : 0,
+                      child: otherPlayer.tempCats.isNotEmpty
+                          // true
+                          ? Row(
+                              children: [
+                                CatWidget(catColor: otherPlayer.color),
+                                Text(
+                                  ' x ${otherPlayer.tempCats.length}',
+                                  style: TextStyle(fontSize: 40, color: otherPlayer.color),
+                                ),
+                              ],
+                            )
+                          : const SizedBox(),
+                    ),
+                    // space between
+                    otherPlayer.tempCats.isNotEmpty && otherPlayer.tempKittens.isNotEmpty
+                        ? SizedBox(width: gridLength * 0.1)
+                        : const SizedBox(),
+                    // kittens
+                    // ignore: sized_box_for_whitespace
+                    Container(
+                      width: otherPlayer.tempKittens.isNotEmpty ? gridLength * 0.35 : 0,
+                      child: otherPlayer.tempKittens.isNotEmpty
+                          ? Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                KittenWidget(kittenColor: otherPlayer.color),
+                                Text(
+                                  ' x ${otherPlayer.tempKittens.length}',
+                                  style: TextStyle(fontSize: 40, color: otherPlayer.color),
+                                ),
+                              ],
+                            )
+                          : const SizedBox(),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(
                 height: gridLength,
@@ -155,7 +153,10 @@ class _MyGamePageState extends State<MyGamePage> {
                                     data: 'Cat',
                                     feedback: CatWidget(catColor: activePlayer.color),
                                     child: CatWidget(catColor: activePlayer.color)),
-                                Text('tempCats: ${activePlayer.tempCats.length}\ncats: ${activePlayer.cats.length}'),
+                                Text(
+                                  ' x ${activePlayer.tempCats.length}',
+                                  style: TextStyle(fontSize: 40, color: activePlayer.color),
+                                ),
                               ],
                             )
                           : const SizedBox(),
@@ -181,8 +182,8 @@ class _MyGamePageState extends State<MyGamePage> {
                                   child: KittenWidget(kittenColor: activePlayer.color),
                                 ),
                                 Text(
-                                  'tempKittens: ${activePlayer.tempKittens.length}\nkittens: ${activePlayer.tempKittens.length}',
-                                  // style: TextStyle(color: Colors.blue.shade400),
+                                  ' x ${activePlayer.tempKittens.length}',
+                                  style: TextStyle(fontSize: 40, color: activePlayer.color),
                                 ),
                               ],
                             )
