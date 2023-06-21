@@ -6,8 +6,8 @@ import 'board.dart';
 import 'my_game_page.dart';
 
 void main() {
-  Player playerOne = Player('Maire', Colors.orange);
-  Player playerTwo = Player('Emily', Colors.grey);
+  Player playerOne = Player('Ralph', Colors.orange);
+  Player playerTwo = Player('Jack', Colors.grey);
   // playGame();
   runApp(MyApp(
     board: Board(playerOne, playerTwo),

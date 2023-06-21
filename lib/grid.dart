@@ -32,13 +32,7 @@ class Grid extends StatefulWidget {
 class _GridState extends State<Grid> {
   List<List<bool>> isDragOver = List.generate(6, (row) => List.filled(6, true));
   Color getCellColor(int row, int column) {
-    // if (row == placementRow && column == placementColumn) {
-    //   return Colors.blue.shade200;
-    // }
-    if (widget.board.cellGoingToBeChangedOnUpdate(row, column)) {
-      return Colors.blue.shade100;
-    }
-    return Colors.blue.shade200;
+    return widget.board.colorGrid[row][column];
   }
 
   @override

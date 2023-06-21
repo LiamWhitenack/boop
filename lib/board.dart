@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 import 'kittens_and_cats.dart';
 import 'player.dart';
 import 'general_functions.dart';
@@ -5,6 +7,7 @@ import 'general_functions.dart';
 class Board {
   List<List> grid = List.generate(6, (row) => List.filled(6, null));
   late List<List> tempGrid = deepCopyMatrix(grid);
+  late List<List<Color>> colorGrid = List.generate(6, (row) => List.filled(6, Colors.blue.shade200));
   // these are the coordinates that are on the grid
   List<int> validCoordinates = [0, 1, 2, 3, 4, 5];
   Player playerOne;
@@ -34,6 +37,7 @@ class Board {
       player.revertKittensAndCats();
     }
     tempGrid = deepCopyMatrix(grid);
+    colorGrid = getColorGridFromGrid();
   }
 
   void boopCat(int row, int column, Player player, String? winner) {
@@ -63,6 +67,7 @@ class Board {
     player.tempCats.removeAt(0);
     tempGrid[row][column] = Cat(player);
 
+    updateColorMatrix();
     winner = checkForWin();
     if (winner != null) {
       return;
@@ -99,6 +104,7 @@ class Board {
     player.tempKittens.removeAt(0);
     tempGrid[row][column] = Kitten(player);
 
+    updateColorMatrix();
     winner = checkForWin();
     if (winner != null) {
       return;
@@ -184,6 +190,30 @@ class Board {
   void updateGrid() {
     grid = deepCopyMatrix(tempGrid);
   }
+
+  List<List<Color>> getColorGridFromGrid() {
+    List<List<Color>> colorGrid = List.generate(6, (row) => List.filled(6, Colors.blue.shade200));
+    return colorGrid;
+  }
+
+  List<List<Color>> updateColorMatrix() {
+    for (int row = 0; row < 6; row++) {
+      for (int column = 0; column < 6; column++) {
+        if (cellGoingToBeChangedOnUpdate(row, column)) {
+          colorGrid[row][column] = Colors.blue.shade100;
+        }
+      }
+    }
+    return colorGrid;
+  }
+
+  // void repeatAFunction6by6Times(Function customFunction) {
+  //   for (int row = 0; row < 6; row++) {
+  //     for (int column = 0; column < 6; column++) {
+  //       customFunction();
+  //     }
+  //   }
+  // }
 
   bool checkIfAllPiecesBelongToTheSamePlayer(List<List<int>> coordinates) {
     int row;
@@ -371,6 +401,7 @@ class Board {
       for (List<int> coordinate in threeInARowCoordinates) {
         int row = coordinate[0];
         int column = coordinate[1];
+
         if (tempGrid[row][column] is Cat) {
           numberOfCatsInARow++;
         } else {
@@ -390,7 +421,7 @@ class Board {
       for (List<int> coordinates in threeInARowCoordinates) {
         int row = coordinates[0];
         int column = coordinates[1];
-
+        colorGrid[row][column] = tempGrid[row][column].player.color.shade400;
         tempGrid[row][column].player.tempCats.add(Cat(tempGrid[row][column].player));
         tempGrid[row][column] = null;
       }
