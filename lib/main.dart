@@ -39,6 +39,7 @@ class _MyAppState extends State<MyApp> {
   void confirmMove() {
     // this will usually return null, otherwise winning player's name
     winner = widget.board.checkForWin();
+    alternatePlayerOneTurn();
     widget.board.updateGrid();
 
     // widget.board.upgradeThreeInARows();
@@ -46,12 +47,20 @@ class _MyAppState extends State<MyApp> {
     widget.board.playerOne.updateKittensAndCats();
     widget.board.playerTwo.updateKittensAndCats();
 
-    alternatePlayerOneTurn();
     setState(() {});
   }
 
   void alternatePlayerOneTurn() {
-    playerOneTurn = !playerOneTurn;
+    Player activePlayer = playerOneTurn ? widget.playerOne : widget.playerTwo;
+    Player otherPlayer = playerOneTurn ? widget.playerTwo : widget.playerOne;
+    if (otherPlayer.kittens.isEmpty && activePlayer.cats.isEmpty) {
+      return;
+    }
+    if (widget.board.boardChanged()) {
+      playerOneTurn = !playerOneTurn;
+      return;
+    }
+    return;
   }
 
   void startOver() {

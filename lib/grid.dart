@@ -49,6 +49,11 @@ class _GridState extends State<Grid> {
     }
 
     Player activePlayer = widget.playerOneTurn ? widget.playerOne : widget.playerTwo;
+    // if (activePlayer.kittens.isEmpty && activePlayer.cats.isEmpty) {
+    //   widget.alternatePlayerOneTurn();
+    // }
+    // activePlayer = widget.playerOneTurn ? widget.playerOne : widget.playerTwo;
+    // // widget.refreshMyGamePageState();
 
     return GridView.builder(
       itemCount: 36,

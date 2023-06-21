@@ -170,6 +170,17 @@ class Board {
     return tempGrid[row][column] != grid[row][column];
   }
 
+  bool boardChanged() {
+    for (int row = 0; row < 6; row++) {
+      for (int column = 0; column < 6; column++) {
+        if (grid[row][column] != tempGrid[row][column]) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   void updateGrid() {
     grid = deepCopyMatrix(tempGrid);
   }
