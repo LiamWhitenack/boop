@@ -16,11 +16,11 @@ class Board {
 
     grid[0][0] = Cat(player);
     grid[0][1] = Cat(player);
-    grid[2][0] = Cat(player);
-    grid[2][1] = Cat(player);
-    grid[4][0] = Cat(player);
-    grid[4][1] = Cat(player);
-    grid[5][5] = Cat(player);
+    // grid[2][0] = Cat(player);
+    // grid[2][1] = Cat(player);
+    // grid[4][0] = Cat(player);
+    // grid[4][1] = Cat(player);
+    // grid[5][5] = Cat(player);
     // grid[1][3] = Cat(player);
   }
 
@@ -36,7 +36,7 @@ class Board {
     tempGrid = deepCopyMatrix(grid);
   }
 
-  void boopCat(int row, int column, Player player) {
+  void boopCat(int row, int column, Player player, String? winner) {
     undoLastBoop();
 
     // return if the piece isn't placed on an open spot
@@ -63,10 +63,15 @@ class Board {
     player.tempCats.removeAt(0);
     tempGrid[row][column] = Cat(player);
 
+    winner = checkForWin();
+    if (winner != null) {
+      return;
+    }
+
     upgradeThreeInARows();
   }
 
-  void boopKitten(int row, int column, Player player) {
+  void boopKitten(int row, int column, Player player, String? winner) {
     undoLastBoop();
 
     // return if the piece isn't placed on an open spot
@@ -93,6 +98,11 @@ class Board {
     // print("64");
     player.tempKittens.removeAt(0);
     tempGrid[row][column] = Kitten(player);
+
+    winner = checkForWin();
+    if (winner != null) {
+      return;
+    }
 
     upgradeThreeInARows();
   }

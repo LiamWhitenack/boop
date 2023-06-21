@@ -43,6 +43,7 @@ class _GridState extends State<Grid> {
 
   @override
   Widget build(BuildContext context) {
+    // List<List<int>> threeInARows = widget.board.findAllThreeInARow()[0];
     if (widget.winner != null) {
       return Text('${widget.winner} wins!');
     }
@@ -64,10 +65,9 @@ class _GridState extends State<Grid> {
             setState(() {});
           },
           onLeave: (value) {
-            setState(() {
-              widget.board.undoLastBoop();
-              isDragOver[row][column] = false;
-            });
+            widget.board.undoLastBoop();
+            isDragOver[row][column] = false;
+            widget.refreshMyGamePageState();
           },
           onWillAccept: (value) {
             if (widget.playerOne.tempKittens.isEmpty &&
@@ -77,9 +77,9 @@ class _GridState extends State<Grid> {
               throw Exception('All out of pieces to place!');
             }
             if (value == 'Kitten') {
-              widget.board.boopKitten(row, column, activePlayer);
+              widget.board.boopKitten(row, column, activePlayer, widget.winner);
             } else if (value == 'Cat') {
-              widget.board.boopCat(row, column, activePlayer);
+              widget.board.boopCat(row, column, activePlayer, widget.winner);
             }
             isDragOver[row][column] = true;
 
