@@ -66,63 +66,53 @@ class _MyGamePageState extends State<MyGamePage> {
           style: const TextStyle(fontSize: 25),
         ),
       ),
-      body: Container(
-        color: Colors.blue.shade50,
-        child: Center(
-          child: ListView(
+      body: Center(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Column(
+              // ohter player's pieces
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: screenHeight * 0.01),
-                  // ohter player's pieces
-                  SizedBox(
-                    width: gridLength + 2.5,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // cats
-                        SizedBox(
-                          width: otherPlayer.tempCats.isNotEmpty ? gridLength * 0.35 : 0,
-                          child: otherPlayer.tempCats.isNotEmpty
-                              // true
-                              ? Row(
-                                  children: [
-                                    CatWidget(catColor: otherPlayer.color),
-                                    Text(
-                                      ' x ${otherPlayer.tempCats.length}',
-                                      style: TextStyle(fontSize: 40, color: otherPlayer.color),
-                                    ),
-                                  ],
-                                )
-                              : const SizedBox(),
-                        ),
-                        // space between
-                        otherPlayer.tempCats.isNotEmpty && otherPlayer.tempKittens.isNotEmpty
-                            ? SizedBox(width: gridLength * 0.1)
-                            : const SizedBox(),
-                        // kittens
-                        // ignore: sized_box_for_whitespace
-                        SizedBox(
-                          width: otherPlayer.tempKittens.isNotEmpty ? gridLength * 0.35 : 0,
-                          child: otherPlayer.tempKittens.isNotEmpty
-                              ? Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    KittenWidget(kittenColor: otherPlayer.color),
-                                    Text(
-                                      ' x ${otherPlayer.tempKittens.length}',
-                                      style: TextStyle(fontSize: 40, color: otherPlayer.color),
-                                    ),
-                                  ],
-                                )
-                              : const SizedBox(),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // cats
+                  otherPlayer.tempCats.isNotEmpty
+                      // true
+                      ? Row(
+                          children: [
+                            CatWidget(catColor: otherPlayer.color),
+                            Text(
+                              ' x ${otherPlayer.tempCats.length}',
+                              style: TextStyle(fontSize: gridLength * 0.08, color: otherPlayer.color),
+                            ),
+                          ],
+                        )
+                      : const SizedBox(),
+                  // space between
+                  otherPlayer.tempCats.isNotEmpty && otherPlayer.tempKittens.isNotEmpty
+                      ? SizedBox(width: gridLength * 0.1)
+                      : const SizedBox(),
+                  // kittens
+                  // ignore: sized_box_for_whitespace
+                  otherPlayer.tempKittens.isNotEmpty
+                      ? Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            KittenWidget(kittenColor: otherPlayer.color),
+                            Text(
+                              ' x ${otherPlayer.tempKittens.length}',
+                              style: TextStyle(fontSize: gridLength * 0.08, color: otherPlayer.color),
+                            ),
+                          ],
+                        )
+                      : const SizedBox(),
+                ],
+              ),
 
-                  SizedBox(height: screenHeight * 0.05),
-                  SizedBox(
+              SizedBox(
+                height: gridLength + screenHeight * 0.1,
+                child: Center(
+                  child: SizedBox(
                     height: gridLength,
                     width: gridLength,
                     child: Grid(
@@ -135,68 +125,56 @@ class _MyGamePageState extends State<MyGamePage> {
                       refreshMyGamePageState: refreshMyGamePageState,
                     ),
                   ),
-                  SizedBox(height: screenHeight * 0.03),
-                  Container(
-                    color: Colors.white10,
-                    height: screenHeight * 0.1,
-                    width: gridLength * 0.8,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // cats
-                        SizedBox(
-                          // color: Colors.black,
-                          width: activePlayer.tempCats.isNotEmpty ? gridLength * 0.35 : 0,
-                          child: activePlayer.tempCats.isNotEmpty
-                              // true
-                              ? Row(
-                                  children: [
-                                    Draggable<String>(
-                                        onDragStarted: () {
-                                          widget.board.undoLastBoop();
-                                        },
-                                        data: 'Cat',
-                                        feedback: CatWidget(catColor: activePlayer.color),
-                                        child: CatWidget(catColor: activePlayer.color)),
-                                    Text(
-                                      ' x ${activePlayer.tempCats.length}',
-                                      style: TextStyle(fontSize: 40, color: activePlayer.color),
-                                    ),
-                                  ],
-                                )
-                              : const SizedBox(),
-                        ),
-                        // space between
-                        activePlayer.tempCats.isNotEmpty && activePlayer.tempKittens.isNotEmpty
-                            ? SizedBox(width: gridLength * 0.1)
-                            : const SizedBox(),
-                        // tempKittens
-                        // ignore: sized_box_for_whitespace
-                        Container(
-                          width: activePlayer.tempKittens.isNotEmpty ? gridLength * 0.35 : 0,
-                          child: activePlayer.tempKittens.isNotEmpty
-                              ? Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Draggable<String>(
-                                      onDragStarted: () {
-                                        widget.board.undoLastBoop();
-                                      },
-                                      data: 'Kitten',
-                                      feedback: KittenWidget(kittenColor: activePlayer.color),
-                                      child: KittenWidget(kittenColor: activePlayer.color),
-                                    ),
-                                    Text(
-                                      ' x ${activePlayer.tempKittens.length}',
-                                      style: TextStyle(fontSize: 40, color: activePlayer.color),
-                                    ),
-                                  ],
-                                )
-                              : const SizedBox(),
-                        ),
-                      ],
-                    ),
-                  ),
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // cats
+                  activePlayer.tempCats.isNotEmpty
+                      // true
+                      ? Row(
+                          children: [
+                            Draggable<String>(
+                                onDragStarted: () {
+                                  widget.board.undoLastBoop();
+                                  refreshMyGamePageState();
+                                },
+                                data: 'Cat',
+                                feedback: CatWidget(catColor: activePlayer.color),
+                                child: CatWidget(catColor: activePlayer.color)),
+                            Text(
+                              ' x ${activePlayer.tempCats.length}',
+                              style: TextStyle(fontSize: gridLength * 0.08, color: activePlayer.color),
+                            ),
+                          ],
+                        )
+                      : const SizedBox(),
+                  // space between
+                  activePlayer.tempCats.isNotEmpty && activePlayer.tempKittens.isNotEmpty
+                      ? SizedBox(width: gridLength * 0.1)
+                      : const SizedBox(),
+                  // tempKittens
+                  activePlayer.tempKittens.isNotEmpty
+                      ? Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Draggable<String>(
+                              onDragStarted: () {
+                                widget.board.undoLastBoop();
+                                refreshMyGamePageState();
+                              },
+                              data: 'Kitten',
+                              feedback: KittenWidget(kittenColor: activePlayer.color),
+                              child: KittenWidget(kittenColor: activePlayer.color),
+                            ),
+                            Text(
+                              ' x ${activePlayer.tempKittens.length}',
+                              style: TextStyle(fontSize: gridLength * 0.08, color: activePlayer.color),
+                            ),
+                          ],
+                        )
+                      : const SizedBox(),
                 ],
               ),
             ],
