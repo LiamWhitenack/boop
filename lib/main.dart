@@ -70,6 +70,7 @@ class _MyAppState extends State<MyApp> {
     widget.playerOne.reset();
     widget.playerTwo.reset();
     winner = null;
+    playerOneTurn = true;
     setState(() {});
   }
 

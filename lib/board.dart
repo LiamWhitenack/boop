@@ -29,6 +29,7 @@ class Board {
 
   void reset() {
     grid = List.generate(6, (row) => List.filled(6, null));
+    colorGrid = List.generate(6, (row) => List.filled(6, Colors.blue.shade200));
     tempGrid = deepCopyMatrix(grid);
   }
 

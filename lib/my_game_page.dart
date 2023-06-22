@@ -76,31 +76,44 @@ class _MyGamePageState extends State<MyGamePage> {
         ),
       ),
       drawer: Drawer(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-          children: [
-            const ListTile(
-              title: Text('Player One Name'),
+        width: 250,
+        child: Center(
+          child: SizedBox(
+            width: 200,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              // padding: const EdgeInsets.symmetric(horizontal: 15.0),
+              children: [
+                TextField(
+                  decoration: const InputDecoration(label: Text('Player One Name')),
+                  controller: playerOneNameEditingController,
+                  onChanged: (value) {
+                    widget.playerOne.name = playerOneNameEditingController.text;
+                  },
+                  onEditingComplete: () => refreshMyGamePageState(),
+                ),
+                // TextField()
+
+                TextField(
+                  decoration: const InputDecoration(label: Text('Player Two Name')),
+                  controller: playerTwoNameEditingController,
+                  onChanged: (value) {
+                    widget.playerTwo.name = playerTwoNameEditingController.text;
+                    refreshMyGamePageState();
+                  },
+                ),
+
+                ListTile(
+                  title: const Center(child: Text('Start Over')),
+                  onTap: () {
+                    widget.startOver();
+                    refreshMyGamePageState();
+                    Navigator.pop(context);
+                  },
+                )
+              ],
             ),
-            TextField(
-              controller: playerOneNameEditingController,
-              onChanged: (value) {
-                widget.playerOne.name = playerOneNameEditingController.text;
-              },
-              onEditingComplete: () => refreshMyGamePageState(),
-            ),
-            // TextField()
-            const ListTile(
-              title: Text("Player Two Name"),
-            ),
-            TextField(
-              controller: playerTwoNameEditingController,
-              onChanged: (value) {
-                widget.playerTwo.name = playerTwoNameEditingController.text;
-                refreshMyGamePageState();
-              },
-            ),
-          ],
+          ),
         ),
       ),
       body: Center(
