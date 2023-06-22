@@ -1,3 +1,4 @@
+import 'package:boop/dialogue.dart';
 import 'package:flutter/material.dart';
 import 'game_over_screen.dart';
 import 'grid.dart';
@@ -36,13 +37,21 @@ class _MyGamePageState extends State<MyGamePage> {
   int? row;
   int? column;
 
+  late TextEditingController playerOneNameEditingController;
+  late TextEditingController playerTwoNameEditingController;
+
   void refreshMyGamePageState() {
     // widget.alternatePlayerOneTurn();
     setState(() {});
   }
 
   @override
-  // ignore: dead_code
+  void initState() {
+    super.initState();
+    playerOneNameEditingController = TextEditingController(text: widget.playerOne.name);
+    playerTwoNameEditingController = TextEditingController(text: widget.playerTwo.name);
+  }
+
   Widget build(BuildContext context) {
     if (widget.winner != null) {
       return GameOverScreen(
@@ -50,13 +59,13 @@ class _MyGamePageState extends State<MyGamePage> {
         startOver: widget.startOver,
       );
     }
-    // ignore: dead_code
     final Player activePlayer = widget.playerOneTurn ? widget.playerOne : widget.playerTwo;
     final Player otherPlayer = widget.playerOneTurn ? widget.playerTwo : widget.playerOne;
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
     final double limitingSize = screenHeight > screenWidth ? screenWidth : screenHeight;
     final double gridLength = limitingSize == screenWidth ? screenWidth * 0.95 : limitingSize * 0.65;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue.shade400,
@@ -64,6 +73,34 @@ class _MyGamePageState extends State<MyGamePage> {
         title: Text(
           widget.title,
           style: const TextStyle(fontSize: 25),
+        ),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0),
+          children: [
+            const ListTile(
+              title: Text('Player One Name'),
+            ),
+            TextField(
+              controller: playerOneNameEditingController,
+              onChanged: (value) {
+                widget.playerOne.name = playerOneNameEditingController.text;
+              },
+              onEditingComplete: () => refreshMyGamePageState(),
+            ),
+            // TextField()
+            const ListTile(
+              title: Text("Player Two Name"),
+            ),
+            TextField(
+              controller: playerTwoNameEditingController,
+              onChanged: (value) {
+                widget.playerTwo.name = playerTwoNameEditingController.text;
+                refreshMyGamePageState();
+              },
+            ),
+          ],
         ),
       ),
       body: Center(

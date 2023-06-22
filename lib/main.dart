@@ -9,11 +9,13 @@ void main() {
   Player playerOne = Player('Ralph', Colors.orange);
   Player playerTwo = Player('Jack', Colors.grey);
   // playGame();
-  runApp(MyApp(
-    board: Board(playerOne, playerTwo),
-    playerOne: playerOne,
-    playerTwo: playerTwo,
-  ));
+  runApp(
+    MyApp(
+      board: Board(playerOne, playerTwo),
+      playerOne: playerOne,
+      playerTwo: playerTwo,
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {

@@ -7,7 +7,7 @@ class Player {
   late List<Kitten> tempKittens;
   List<Cat> cats = [];
   List<Cat> tempCats = [];
-  final String name;
+  String name;
   final Color color;
   Player(this.name, this.color) {
     kittens = List.filled(8, Kitten(this), growable: true);
