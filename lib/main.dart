@@ -1,7 +1,6 @@
 // import 'package:boop/game_flow.dart';
 import 'package:boop/player.dart';
 import 'package:flutter/material.dart';
-
 import 'board.dart';
 import 'my_game_page.dart';
 
@@ -76,10 +75,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery.of(context).size.height;
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final double limitingSize = screenHeight > screenWidth ? screenWidth : screenHeight;
-    final double gridLength = limitingSize == screenWidth ? screenWidth * 0.95 : limitingSize * 0.65;
+    // final double screenHeight = MediaQuery.of(context).size.height;
+    // final double screenWidth = MediaQuery.of(context).size.width;
     String playerTurn = playerOneTurn ? widget.playerOne.name : widget.playerTwo.name;
     return MaterialApp(
       title: 'Boop.',
@@ -102,10 +99,10 @@ class _MyAppState extends State<MyApp> {
             ? FloatingActionButton(
                 backgroundColor: Colors.blue.shade400,
                 onPressed: confirmMove,
-                child: Icon(
+                child: const Icon(
                   Icons.check,
                   color: Colors.white,
-                  size: gridLength * 0.1,
+                  size: 40.0,
                 ),
               )
             : null,
