@@ -25,27 +25,37 @@ class _ViewPossibilitiesScreenState extends State<ViewPossibilitiesScreen> {
   @override
   Widget build(BuildContext context) {
     Possibility possibilityOne = widget.possibilities[0];
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Grid(
-          board: possibilityOne.futureBoard,
-          playerOne: possibilityOne.player,
-          playerTwo: possibilityOne.otherPlayer,
-          refreshMyGamePageState: widget.refreshMyGamePageState,
-          alternatePlayerOneTurn: widget.alternatePlayerOneTurn,
-          playerOneTurn: widget.playerOneTurn,
-          winner: widget.winner,
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.blue.shade400,
+        foregroundColor: Colors.white,
+        title: const Text(
+          'Possibilities',
+          style: TextStyle(fontSize: 25),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextButton(onPressed: () {}, child: const Text(">")),
-            const SizedBox(width: 50),
-            TextButton(onPressed: () {}, child: const Text("<")),
-          ],
-        ),
-      ],
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Grid(
+            board: possibilityOne.futureBoard,
+            playerOne: possibilityOne.player,
+            playerTwo: possibilityOne.otherPlayer,
+            refreshMyGamePageState: widget.refreshMyGamePageState,
+            alternatePlayerOneTurn: widget.alternatePlayerOneTurn,
+            playerOneTurn: widget.playerOneTurn,
+            winner: widget.winner,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(onPressed: () {}, child: const Text(">")),
+              const SizedBox(width: 50),
+              TextButton(onPressed: () {}, child: const Text("<")),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }

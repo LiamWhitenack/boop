@@ -1,3 +1,5 @@
+import 'package:boop/possibility.dart';
+import 'package:boop/view_possibilities_screen.dart';
 import 'package:flutter/material.dart';
 import 'game_over_screen.dart';
 import 'grid.dart';
@@ -109,7 +111,24 @@ class _MyGamePageState extends State<MyGamePage> {
                     refreshMyGamePageState();
                     Navigator.pop(context);
                   },
-                )
+                ),
+
+                ListTile(
+                  title: Text('View Possibilities'),
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ViewPossibilitiesScreen(
+                          possibilities: [Possibility(widget.board, widget.playerTwo, widget.playerTwo)],
+                          refreshMyGamePageState: refreshMyGamePageState,
+                          alternatePlayerOneTurn: widget.alternatePlayerOneTurn,
+                          playerOneTurn: widget.playerOneTurn,
+                          winner: widget.winner,
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
           ),
