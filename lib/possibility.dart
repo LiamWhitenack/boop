@@ -2,6 +2,8 @@
 
 import 'package:boop/board.dart';
 
+import 'player.dart';
+
 class Possibility {
   // positive: advantage for player deciding
   // negative: advantage for other player
@@ -19,18 +21,13 @@ class Possibility {
   // future possibility
   Board futureBoard;
 
-  int myKittens;
-  int myCats;
-
-  int theirKittens;
-  int theirCats;
+  Player player;
+  Player otherPlayer;
 
   Possibility(
     this.futureBoard,
-    this.myKittens,
-    this.myCats,
-    this.theirKittens,
-    this.theirCats,
+    this.player,
+    this.otherPlayer,
     // this.row,
     // this.column,
     // this.player,

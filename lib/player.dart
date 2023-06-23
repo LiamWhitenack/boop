@@ -9,6 +9,8 @@ class Player {
   List<Cat> tempCats = [];
   String name;
   final Color color;
+  // turn this on for an AI player
+  bool automaticallyTakeTurns = false;
   Player(this.name, this.color) {
     kittens = List.filled(8, Kitten(this), growable: true);
     tempKittens = List.filled(8, Kitten(this), growable: true);

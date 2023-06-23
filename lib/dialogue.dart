@@ -10,7 +10,7 @@ showCustomDialog(BuildContext context) {
   // set up the AlertDialog
   AlertDialog alert = AlertDialog(
     title: const Text("My title"),
-    content: const Text("This is my message."),
+    content: const Text("This is player message."),
     actions: [
       okButton,
     ],

@@ -481,10 +481,8 @@ class Board {
 
     return Possibility(
       this,
-      player.kittens.length,
-      player.cats.length,
-      otherPlayer.kittens.length,
-      otherPlayer.cats.length,
+      player,
+      otherPlayer,
     );
   }
 
@@ -525,10 +523,8 @@ class Board {
 
     return Possibility(
       this,
-      player.kittens.length,
-      player.cats.length,
-      otherPlayer.kittens.length,
-      otherPlayer.cats.length,
+      player,
+      otherPlayer,
     );
   }
 }
