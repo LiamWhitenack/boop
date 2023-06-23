@@ -1,3 +1,4 @@
+import 'package:boop/possibility.dart';
 import 'package:flutter/material.dart';
 
 import 'kittens_and_cats.dart';
@@ -12,6 +13,7 @@ class Board {
   List<int> validCoordinates = [0, 1, 2, 3, 4, 5];
   Player playerOne;
   Player playerTwo;
+  String? winner;
   Board(this.playerOne, this.playerTwo);
 
   void setUpPlayerForWinning(Player player) {
@@ -428,5 +430,105 @@ class Board {
       }
     }
     // tempGrid = deepCopyMatrix(grid);
+  }
+
+  List<Possibility> generateAllFuturePossibilites() {
+    List<Possibility> result = [];
+    for (int row = 0; row < 6; row++) {
+      for (int column = 0; column < 6; column++) {
+        result.add(generateFuturePossibilityWithCat(this, row, column, playerTwo, playerOne, winner));
+        result.add(generateFuturePossibilityWithKitten(this, row, column, playerTwo, playerOne, winner));
+      }
+    }
+    return result;
+  }
+
+  Possibility generateFuturePossibilityWithCat(
+    Board board,
+    int row,
+    int column,
+    Player player,
+    Player otherPlayer,
+    String? winner,
+  ) {
+    board.undoLastBoop();
+
+    // return if the piece isn't placed on an open spot
+    if (grid[row][column] != null) {
+      throw Exception('please place on open spot');
+    }
+
+    // return if the player is out of cats to place
+    if (player.tempCats.isEmpty) {
+      throw Exception('not enough cats to place!');
+    }
+
+    for (int i = -1; i < 2; i++) {
+      for (int j = -1; j < 2; j++) {
+        if (!validCoordinates.contains(row + i) || !validCoordinates.contains(column + j)) {
+          continue;
+        }
+        board.boopCatInGivenDirection(row, column, i, j, player);
+      }
+    }
+
+    player.tempCats.removeAt(0);
+    tempGrid[row][column] = Cat(player);
+
+    board.updateColorMatrix();
+    winner = board.checkForWin();
+    board.upgradeThreeInARows();
+
+    return Possibility(
+      this,
+      player.kittens.length,
+      player.cats.length,
+      otherPlayer.kittens.length,
+      otherPlayer.cats.length,
+    );
+  }
+
+  Possibility generateFuturePossibilityWithKitten(
+    Board board,
+    int row,
+    int column,
+    Player player,
+    Player otherPlayer,
+    String? winner,
+  ) {
+    board.undoLastBoop();
+
+    // return if the piece isn't placed on an open spot
+    if (board.tempGrid[row][column] != null) {
+      throw Exception('please place on open spot');
+    }
+
+    // return if the player is out of cats to place
+    if (player.tempCats.isEmpty) {
+      throw Exception('not enough cats to place!');
+    }
+
+    for (int i = -1; i < 2; i++) {
+      for (int j = -1; j < 2; j++) {
+        if (!validCoordinates.contains(row + i) || !validCoordinates.contains(column + j)) {
+          continue;
+        }
+        board.boopCatInGivenDirection(row, column, i, j, player);
+      }
+    }
+
+    player.tempCats.removeAt(0);
+    board.tempGrid[row][column] = Cat(player);
+
+    winner = board.checkForWin();
+    board.upgradeThreeInARows();
+
+    return Possibility(
+      this,
+      player.kittens.length,
+      player.cats.length,
+      otherPlayer.kittens.length,
+      otherPlayer.cats.length,
+    );
   }
 }
