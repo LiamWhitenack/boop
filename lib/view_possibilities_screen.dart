@@ -76,7 +76,7 @@ class _ViewPossibilitiesScreenState extends State<ViewPossibilitiesScreen> {
                   height: 500,
                   width: 500,
                   child: Grid(
-                    board: mainPossibility.futureBoard,
+                    board: mainPossibility.board,
                     playerOne: mainPossibility.player,
                     playerTwo: mainPossibility.otherPlayer,
                     refreshMyGamePageState: widget.refreshMyGamePageState,

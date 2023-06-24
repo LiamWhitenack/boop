@@ -442,17 +442,24 @@ class Board {
           Possibility catPossibility =
               generateFuturePossibilityWithCat(clone(), row, column, playerTwo, playerOne, winner);
           catPossibility.player.cats = List.filled(catPossibility.player.kittens.length, Cat(player));
+          catPossibility.scoreGrid();
           result.add(catPossibility);
         }
         if (player.kittens.isNotEmpty) {
           Possibility kittenPossibility =
               generateFuturePossibilityWithKitten(clone(), row, column, playerTwo, playerOne, winner);
           kittenPossibility.player.kittens = List.filled(kittenPossibility.player.kittens.length, Kitten(player));
+          kittenPossibility.scoreGrid();
           result.add(kittenPossibility);
         }
       }
     }
-    return result;
+    return sortPossibilities(result);
+  }
+
+  List<Possibility> sortPossibilities(List<Possibility> list) {
+    list.sort((a, b) => a.score.compareTo(b.score));
+    return list.reversed.toList();
   }
 
   Possibility generateFuturePossibilityWithCat(
