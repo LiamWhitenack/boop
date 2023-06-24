@@ -114,12 +114,12 @@ class _MyGamePageState extends State<MyGamePage> {
                 ),
 
                 ListTile(
-                  title: Text('View Possibilities'),
+                  title: const Text('View Possibilities'),
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => ViewPossibilitiesScreen(
-                          possibilities: [Possibility(widget.board, widget.playerTwo, widget.playerTwo)],
+                          possibilities: [Possibility(widget.board, widget.playerTwo, widget.playerOne)],
                           refreshMyGamePageState: refreshMyGamePageState,
                           alternatePlayerOneTurn: widget.alternatePlayerOneTurn,
                           playerOneTurn: widget.playerOneTurn,

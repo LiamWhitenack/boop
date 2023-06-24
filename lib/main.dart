@@ -7,6 +7,7 @@ import 'my_app.dart';
 void main() {
   Player playerOne = Player('Ralph', Colors.orange);
   Player playerTwo = Player('Jack', Colors.grey);
+  playerTwo.automaticallyTakeTurns = true;
   // playGame();
   runApp(
     MyApp(

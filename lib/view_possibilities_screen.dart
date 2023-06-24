@@ -22,9 +22,25 @@ class ViewPossibilitiesScreen extends StatefulWidget {
 }
 
 class _ViewPossibilitiesScreenState extends State<ViewPossibilitiesScreen> {
+  int index = 0;
+
+  void increaseIndex() {
+    if (index != widget.possibilities.length - 1) {
+      index++;
+      setState(() {});
+    }
+  }
+
+  void decreaseIndex() {
+    if (index != 0) {
+      index--;
+      setState(() {});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    Possibility possibilityOne = widget.possibilities[0];
+    Possibility mainPossibility = widget.possibilities[index];
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue.shade400,
@@ -37,21 +53,73 @@ class _ViewPossibilitiesScreenState extends State<ViewPossibilitiesScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Grid(
-            board: possibilityOne.futureBoard,
-            playerOne: possibilityOne.player,
-            playerTwo: possibilityOne.otherPlayer,
-            refreshMyGamePageState: widget.refreshMyGamePageState,
-            alternatePlayerOneTurn: widget.alternatePlayerOneTurn,
-            playerOneTurn: widget.playerOneTurn,
-            winner: widget.winner,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                height: 500,
+                width: 500,
+                child: Grid(
+                  board: mainPossibility.futureBoard,
+                  playerOne: mainPossibility.player,
+                  playerTwo: mainPossibility.otherPlayer,
+                  refreshMyGamePageState: widget.refreshMyGamePageState,
+                  alternatePlayerOneTurn: widget.alternatePlayerOneTurn,
+                  playerOneTurn: widget.playerOneTurn,
+                  winner: widget.winner,
+                ),
+              ),
+              const SizedBox(width: 100),
+              Text(
+                  'Orange Kittens: ${mainPossibility.otherPlayer.kittens.length}\nOrange Cats: ${mainPossibility.otherPlayer.cats.length}\nGrey Kittens: ${mainPossibility.player.kittens.length}\nGrey Cats: ${mainPossibility.player.cats.length}\n\nScore: ${mainPossibility.score}'),
+            ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              TextButton(onPressed: () {}, child: const Text(">")),
-              const SizedBox(width: 50),
-              TextButton(onPressed: () {}, child: const Text("<")),
+              index != 0
+                  ? TextButton(
+                      onPressed: () {
+                        decreaseIndex();
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.blue),
+                          borderRadius: const BorderRadius.all(Radius.circular(20)),
+                        ),
+                        height: 50,
+                        width: 75,
+                        // color: Colors.blue,
+                        child: const Icon(
+                          Icons.arrow_left_outlined,
+                          color: Colors.blue,
+                        ),
+                      ),
+                    )
+                  : const SizedBox(),
+              const SizedBox(width: 50, height: 50),
+              index == widget.possibilities.length
+                  ? TextButton(
+                      onPressed: () {
+                        increaseIndex();
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.blue),
+                          borderRadius: const BorderRadius.all(Radius.circular(20)),
+                        ),
+                        height: 50,
+                        width: 75,
+                        // color: Colors.blue,
+                        child: const Center(
+                          child: Icon(
+                            Icons.arrow_right_outlined,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                    )
+                  : const SizedBox(),
             ],
           ),
         ],
