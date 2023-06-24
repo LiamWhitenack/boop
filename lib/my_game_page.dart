@@ -53,6 +53,7 @@ class _MyGamePageState extends State<MyGamePage> {
     playerTwoNameEditingController = TextEditingController(text: widget.playerTwo.name);
   }
 
+  @override
   Widget build(BuildContext context) {
     if (widget.winner != null) {
       return GameOverScreen(
@@ -116,10 +117,13 @@ class _MyGamePageState extends State<MyGamePage> {
                 ListTile(
                   title: const Text('View Possibilities'),
                   onTap: () {
+                    List<Possibility> allFuturePossibilities =
+                        widget.board.generateAllFuturePossibilites(widget.playerTwo);
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => ViewPossibilitiesScreen(
-                          possibilities: [Possibility(widget.board, widget.playerTwo, widget.playerOne)],
+                          // possibilities: [Possibility(widget.board, widget.playerTwo, widget.playerOne)],
+                          possibilities: allFuturePossibilities,
                           refreshMyGamePageState: refreshMyGamePageState,
                           alternatePlayerOneTurn: widget.alternatePlayerOneTurn,
                           playerOneTurn: widget.playerOneTurn,

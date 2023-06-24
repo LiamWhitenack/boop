@@ -96,9 +96,9 @@ class _ViewPossibilitiesScreenState extends State<ViewPossibilitiesScreen> {
                         ),
                       ),
                     )
-                  : const SizedBox(),
+                  : const SizedBox(width: 75),
               const SizedBox(width: 50, height: 50),
-              index == widget.possibilities.length
+              index != widget.possibilities.length - 1
                   ? TextButton(
                       onPressed: () {
                         increaseIndex();
@@ -119,7 +119,7 @@ class _ViewPossibilitiesScreenState extends State<ViewPossibilitiesScreen> {
                         ),
                       ),
                     )
-                  : const SizedBox(),
+                  : const SizedBox(width: 75),
             ],
           ),
         ],

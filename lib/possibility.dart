@@ -1,8 +1,6 @@
 // import 'player.dart';
 
 import 'package:boop/board.dart';
-import 'package:flutter/material.dart';
-
 import 'player.dart';
 
 class Possibility {
@@ -35,7 +33,6 @@ class Possibility {
     // this.winner,
     // this.pieceType,
   ) {
-    futureBoard.colorGrid = List.filled(6, List.filled(6, Colors.blue.shade200));
     score = scoreFutureGrid();
   }
 

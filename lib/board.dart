@@ -432,61 +432,30 @@ class Board {
     // tempGrid = deepCopyMatrix(grid);
   }
 
-  List<Possibility> generateAllFuturePossibilites() {
+  List<Possibility> generateAllFuturePossibilites(Player player) {
     List<Possibility> result = [];
     for (int row = 0; row < 6; row++) {
       for (int column = 0; column < 6; column++) {
-        result.add(generateFuturePossibilityWithCat(this, row, column, playerTwo, playerOne, winner));
-        result.add(generateFuturePossibilityWithKitten(this, row, column, playerTwo, playerOne, winner));
+        if (tempGrid[row][column] != null) continue;
+        if (grid[row][column] != null) continue;
+        if (player.cats.isNotEmpty) {
+          Possibility catPossibility =
+              generateFuturePossibilityWithCat(clone(), row, column, playerTwo, playerOne, winner);
+          catPossibility.player.cats = List.filled(catPossibility.player.kittens.length, Cat(player));
+          result.add(catPossibility);
+        }
+        if (player.kittens.isNotEmpty) {
+          Possibility kittenPossibility =
+              generateFuturePossibilityWithKitten(clone(), row, column, playerTwo, playerOne, winner);
+          kittenPossibility.player.kittens = List.filled(kittenPossibility.player.kittens.length, Kitten(player));
+          result.add(kittenPossibility);
+        }
       }
     }
     return result;
   }
 
   Possibility generateFuturePossibilityWithCat(
-    Board board,
-    int row,
-    int column,
-    Player player,
-    Player otherPlayer,
-    String? winner,
-  ) {
-    board.undoLastBoop();
-
-    // return if the piece isn't placed on an open spot
-    if (grid[row][column] != null) {
-      throw Exception('please place on open spot');
-    }
-
-    // return if the player is out of cats to place
-    if (player.tempCats.isEmpty) {
-      throw Exception('not enough cats to place!');
-    }
-
-    for (int i = -1; i < 2; i++) {
-      for (int j = -1; j < 2; j++) {
-        if (!validCoordinates.contains(row + i) || !validCoordinates.contains(column + j)) {
-          continue;
-        }
-        board.boopCatInGivenDirection(row, column, i, j, player);
-      }
-    }
-
-    player.tempCats.removeAt(0);
-    tempGrid[row][column] = Cat(player);
-
-    board.updateColorMatrix();
-    winner = board.checkForWin();
-    board.upgradeThreeInARows();
-
-    return Possibility(
-      this,
-      player,
-      otherPlayer,
-    );
-  }
-
-  Possibility generateFuturePossibilityWithKitten(
     Board board,
     int row,
     int column,
@@ -516,15 +485,65 @@ class Board {
     }
 
     player.tempCats.removeAt(0);
-    board.tempGrid[row][column] = Cat(player);
+    tempGrid[row][column] = Cat(player);
+
+    board.updateColorMatrix();
+    winner = board.checkForWin();
+    board.upgradeThreeInARows();
+
+    return Possibility(
+      board,
+      player,
+      otherPlayer,
+    );
+  }
+
+  Possibility generateFuturePossibilityWithKitten(
+    Board board,
+    int row,
+    int column,
+    Player player,
+    Player otherPlayer,
+    String? winner,
+  ) {
+    board.undoLastBoop();
+
+    // return if the piece isn't placed on an open spot
+    if (board.tempGrid[row][column] != null) {
+      throw Exception('please place on open spot');
+    }
+
+    // return if the player is out of cats to place
+    if (player.tempKittens.isEmpty) {
+      throw Exception('not enough cats to place!');
+    }
+
+    for (int i = -1; i < 2; i++) {
+      for (int j = -1; j < 2; j++) {
+        if (!validCoordinates.contains(row + i) || !validCoordinates.contains(column + j)) {
+          continue;
+        }
+        board.boopCatInGivenDirection(row, column, i, j, player);
+      }
+    }
+
+    player.tempKittens.removeAt(0);
+    board.tempGrid[row][column] = Kitten(player);
 
     winner = board.checkForWin();
     board.upgradeThreeInARows();
 
     return Possibility(
-      this,
+      board,
       player,
       otherPlayer,
     );
+  }
+
+  Board clone() {
+    Board clone = Board(playerOne, playerTwo);
+    clone.tempGrid = deepCopyMatrix(tempGrid);
+    clone.updateGrid();
+    return clone;
   }
 }
