@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:boop/possibility.dart';
 import 'package:flutter/material.dart';
 
@@ -27,6 +29,15 @@ class Board {
     // grid[4][1] = Cat(player);
     // grid[5][5] = Cat(player);
     // grid[1][3] = Cat(player);
+  }
+
+  void setUpPlayerForScoring(Player player) {
+    // this function is for testing only
+
+    grid[0][0] = Kitten(player);
+    grid[0][1] = Kitten(player);
+    tempGrid[0][0] = Kitten(player);
+    tempGrid[0][1] = Kitten(player);
   }
 
   void reset() {
@@ -221,16 +232,16 @@ class Board {
   bool checkIfAllPiecesBelongToTheSamePlayer(List<List<int>> coordinates) {
     int row;
     int column;
-    Player? owner;
+    String? ownerName;
     for (List<int> coordinate in coordinates) {
       row = coordinate[0];
       column = coordinate[1];
       if (tempGrid[row][column] == null) {
         return false;
       }
-      if (owner == null) {
-        owner = tempGrid[row][column].player;
-      } else if (tempGrid[row][column].player != owner) {
+      if (ownerName == null) {
+        ownerName = tempGrid[row][column].player.name;
+      } else if (tempGrid[row][column].player.name != ownerName) {
         return false;
       }
     }
@@ -425,31 +436,43 @@ class Board {
         int row = coordinates[0];
         int column = coordinates[1];
         colorGrid[row][column] = tempGrid[row][column].player.color.shade400;
-        tempGrid[row][column].player.tempCats.add(Cat(tempGrid[row][column].player));
+        Player owner = tempGrid[row][column].player;
+        owner.tempCats.add(Cat(owner));
         tempGrid[row][column] = null;
       }
     }
-    // tempGrid = deepCopyMatrix(grid);
   }
 
-  List<Possibility> generateAllFuturePossibilites(Player player) {
+  List<Possibility> generateAllFuturePossibilites(Player player, Player otherPlayer) {
+    // late Player playerClone;
+    // late Player otherPlayerClone;
     List<Possibility> result = [];
     for (int row = 0; row < 6; row++) {
       for (int column = 0; column < 6; column++) {
         if (tempGrid[row][column] != null) continue;
         if (grid[row][column] != null) continue;
-        if (player.cats.isNotEmpty) {
-          Possibility catPossibility =
-              generateFuturePossibilityWithCat(clone(), row, column, playerTwo, playerOne, winner);
-          catPossibility.player.cats = List.filled(catPossibility.player.kittens.length, Cat(player));
+        Player playerClone = player.clone();
+        Player otherPlayerClone = otherPlayer.clone();
+        if (player.tempCats.isNotEmpty) {
+          Possibility catPossibility = generateFuturePossibilityWithCat(
+              clone(playerClone, otherPlayerClone), row, column, playerClone, otherPlayerClone, winner);
+          catPossibility.player.tempCats =
+              List.filled(catPossibility.player.tempKittens.length, Cat(playerClone), growable: true);
+          catPossibility.otherPlayer.tempCats =
+              List.filled(catPossibility.otherPlayer.tempKittens.length, Cat(otherPlayerClone), growable: true);
           catPossibility.scoreGrid();
           result.add(catPossibility);
         }
-        if (player.kittens.isNotEmpty) {
-          Possibility kittenPossibility =
-              generateFuturePossibilityWithKitten(clone(), row, column, playerTwo, playerOne, winner);
-          kittenPossibility.player.kittens = List.filled(kittenPossibility.player.kittens.length, Kitten(player));
+        if (player.tempKittens.isNotEmpty) {
+          Possibility kittenPossibility = generateFuturePossibilityWithKitten(
+              clone(playerClone, otherPlayerClone), row, column, playerClone, otherPlayerClone, winner);
+
+          kittenPossibility.player.tempKittens =
+              List.filled(kittenPossibility.player.tempKittens.length, Kitten(playerClone), growable: true);
+          kittenPossibility.otherPlayer.tempKittens =
+              List.filled(kittenPossibility.otherPlayer.tempKittens.length, Kitten(otherPlayerClone), growable: true);
           kittenPossibility.scoreGrid();
+
           result.add(kittenPossibility);
         }
       }
@@ -466,19 +489,17 @@ class Board {
     Board board,
     int row,
     int column,
-    Player player,
-    Player otherPlayer,
+    Player playerClone,
+    Player otherPlayerClone,
     String? winner,
   ) {
-    board.undoLastBoop();
-
     // return if the piece isn't placed on an open spot
     if (board.tempGrid[row][column] != null) {
       throw Exception('please place on open spot');
     }
 
     // return if the player is out of cats to place
-    if (player.tempCats.isEmpty) {
+    if (playerClone.tempCats.isEmpty) {
       throw Exception('not enough cats to place!');
     }
 
@@ -487,12 +508,12 @@ class Board {
         if (!validCoordinates.contains(row + i) || !validCoordinates.contains(column + j)) {
           continue;
         }
-        board.boopCatInGivenDirection(row, column, i, j, player);
+        board.boopCatInGivenDirection(row, column, i, j, playerClone);
       }
     }
 
-    player.tempCats.removeAt(0);
-    tempGrid[row][column] = Cat(player);
+    playerClone.tempCats.removeAt(0);
+    tempGrid[row][column] = Cat(playerClone);
 
     board.updateColorMatrix();
     winner = board.checkForWin();
@@ -500,8 +521,8 @@ class Board {
 
     return Possibility(
       board,
-      player,
-      otherPlayer,
+      playerClone,
+      otherPlayerClone,
     );
   }
 
@@ -509,8 +530,8 @@ class Board {
     Board board,
     int row,
     int column,
-    Player player,
-    Player otherPlayer,
+    Player playerClone,
+    Player otherPlayerClone,
     String? winner,
   ) {
     board.undoLastBoop();
@@ -521,8 +542,8 @@ class Board {
     }
 
     // return if the player is out of cats to place
-    if (player.tempKittens.isEmpty) {
-      throw Exception('not enough cats to place!');
+    if (playerClone.tempKittens.isEmpty) {
+      throw Exception('not enough kittens to place!');
     }
 
     for (int i = -1; i < 2; i++) {
@@ -530,26 +551,40 @@ class Board {
         if (!validCoordinates.contains(row + i) || !validCoordinates.contains(column + j)) {
           continue;
         }
-        board.boopCatInGivenDirection(row, column, i, j, player);
+        board.boopCatInGivenDirection(row, column, i, j, playerClone);
       }
     }
 
-    player.tempKittens.removeAt(0);
-    board.tempGrid[row][column] = Kitten(player);
+    playerClone.tempKittens.removeAt(0);
+    board.tempGrid[row][column] = Kitten(playerClone);
 
     winner = board.checkForWin();
     board.upgradeThreeInARows();
 
     return Possibility(
       board,
-      player,
-      otherPlayer,
+      playerClone,
+      otherPlayerClone,
     );
   }
 
-  Board clone() {
-    Board clone = Board(playerOne, playerTwo);
+  Board clone(Player playerOneClone, Player playerTwoClone) {
+    Board clone = Board(playerOneClone, playerTwoClone);
     clone.tempGrid = deepCopyMatrix(tempGrid);
+    for (int row = 0; row < 6; row++) {
+      for (int column = 0; column < 6; column++) {
+        if (clone.tempGrid[row][column] != null) {
+          // replace the owner of the piece with the new deepCopies
+          Player ownerOfPiece =
+              clone.tempGrid[row][column].player.name == playerOneClone.name ? playerOneClone : playerTwoClone;
+          if (clone.tempGrid[row][column] is Cat) {
+            clone.tempGrid[row][column] = Cat(ownerOfPiece);
+          } else {
+            clone.tempGrid[row][column] = Kitten(ownerOfPiece);
+          }
+        }
+      }
+    }
     clone.updateGrid();
     return clone;
   }

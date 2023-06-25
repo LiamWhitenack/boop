@@ -118,7 +118,7 @@ class _MyGamePageState extends State<MyGamePage> {
                   title: const Text('View Possibilities'),
                   onTap: () {
                     List<Possibility> allFuturePossibilities =
-                        widget.board.generateAllFuturePossibilites(widget.playerTwo);
+                        widget.board.generateAllFuturePossibilites(activePlayer, otherPlayer);
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => ViewPossibilitiesScreen(

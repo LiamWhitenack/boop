@@ -40,17 +40,12 @@ class Possibility {
   }
 
   double scoreGrid() {
-    int count = 0;
     for (int row = 0; row < 6; row++) {
       for (int column = 0; column < 6; column++) {
         if (board.tempGrid[row][column] != null) {
-          count++;
           score = score + scoreAffectFromPosition(player, row, column);
         }
       }
-    }
-    if (count == 0) {
-      print('huh?');
     }
     return score;
   }

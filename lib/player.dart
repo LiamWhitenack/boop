@@ -48,4 +48,13 @@ class Player {
 
     tempCats.addAll(List.filled(3, Cat(this)));
   }
+
+  Player clone() {
+    Player clone = Player(name, color);
+    clone.kittens = List.filled(tempKittens.length, Kitten(clone), growable: true);
+    clone.tempKittens = List.filled(tempKittens.length, Kitten(clone), growable: true);
+    clone.cats = List.filled(tempCats.length, Cat(clone), growable: true);
+    clone.tempCats = List.filled(tempCats.length, Cat(clone), growable: true);
+    return clone;
+  }
 }

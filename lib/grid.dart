@@ -84,6 +84,7 @@ class _GridState extends State<Grid> {
 
             // testing only
             // widget.board.setUpPlayerForWinning(widget.playerOne);
+            // widget.board.setUpPlayerForScoring(widget.playerOne);
 
             widget.refreshMyGamePageState();
             return widget.board.grid[row][column] == null;

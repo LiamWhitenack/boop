@@ -86,8 +86,15 @@ class _ViewPossibilitiesScreenState extends State<ViewPossibilitiesScreen> {
                   ),
                 ),
                 const SizedBox(width: 100),
-                Text(
-                    'Orange Kittens: ${mainPossibility.otherPlayer.kittens.length}\nOrange Cats: ${mainPossibility.otherPlayer.cats.length}\nGrey Kittens: ${mainPossibility.player.kittens.length}\nGrey Cats: ${mainPossibility.player.cats.length}\n\nScore: ${mainPossibility.score}'),
+                Column(
+                  children: [
+                    Text('Other Kittens: ${mainPossibility.otherPlayer.tempKittens.length}'),
+                    Text('Other Cats: ${mainPossibility.otherPlayer.tempCats.length}'),
+                    Text('My Kittens: ${mainPossibility.player.tempKittens.length}'),
+                    Text('My Cats: ${mainPossibility.player.tempCats.length}'),
+                    Text('Score: ${mainPossibility.score}'),
+                  ],
+                ),
               ],
             ),
             Row(
