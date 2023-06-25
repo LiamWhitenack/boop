@@ -1,18 +1,14 @@
+import 'package:boop/game_state.dart';
 import 'package:flutter/material.dart';
-import 'board.dart';
 import 'my_game_page.dart';
 import 'player.dart';
 
 class MyApp extends StatefulWidget {
-  final Board board;
-  final Player playerOne;
-  final Player playerTwo;
+  final GameState gameState;
 
   const MyApp({
     super.key,
-    required this.board,
-    required this.playerOne,
-    required this.playerTwo,
+    required this.gameState,
   });
 
   @override
@@ -20,42 +16,39 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String? winner;
-  bool playerOneTurn = true;
-
   void confirmMove() {
     // this will usually return null, otherwise winning player's name
-    winner = widget.board.checkForWin();
+    widget.gameState.winner = widget.gameState.board.checkForWin();
     alternatePlayerOneTurn();
-    widget.board.updateGrid();
+    widget.gameState.board.updateGrid();
 
     // widget.board.upgradeThreeInARows();
 
-    widget.board.playerOne.updateKittensAndCats();
-    widget.board.playerTwo.updateKittensAndCats();
+    widget.gameState.board.playerOne.updateKittensAndCats();
+    widget.gameState.board.playerTwo.updateKittensAndCats();
 
     setState(() {});
   }
 
   void alternatePlayerOneTurn() {
-    Player activePlayer = playerOneTurn ? widget.playerOne : widget.playerTwo;
-    Player otherPlayer = playerOneTurn ? widget.playerTwo : widget.playerOne;
+    Player activePlayer = widget.gameState.playerOneTurn ? widget.gameState.playerOne : widget.gameState.playerTwo;
+    Player otherPlayer = widget.gameState.playerOneTurn ? widget.gameState.playerTwo : widget.gameState.playerOne;
     if (otherPlayer.kittens.isEmpty && activePlayer.cats.isEmpty) {
       return;
     }
-    if (widget.board.boardChanged()) {
-      playerOneTurn = !playerOneTurn;
+    if (widget.gameState.board.boardChanged()) {
+      widget.gameState.playerOneTurn = !widget.gameState.playerOneTurn;
       return;
     }
     return;
   }
 
   void startOver() {
-    widget.board.reset();
-    widget.playerOne.reset();
-    widget.playerTwo.reset();
-    winner = null;
-    playerOneTurn = true;
+    widget.gameState.board.reset();
+    widget.gameState.playerOne.reset();
+    widget.gameState.playerTwo.reset();
+    widget.gameState.winner = null;
+    widget.gameState.playerOneTurn = true;
     setState(() {});
   }
 
@@ -63,7 +56,8 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     // final double screenHeight = MediaQuery.of(context).size.height;
     // final double screenWidth = MediaQuery.of(context).size.width;
-    String playerTurn = playerOneTurn ? widget.playerOne.name : widget.playerTwo.name;
+    String playerTurn =
+        widget.gameState.playerOneTurn ? widget.gameState.playerOne.name : widget.gameState.playerTwo.name;
     return MaterialApp(
       title: 'Boop.',
       theme: ThemeData(
@@ -72,16 +66,12 @@ class _MyAppState extends State<MyApp> {
           fontFamily: "Permanent-Marker"),
       home: Scaffold(
         body: MyGamePage(
-          title: winner == null ? "$playerTurn's Turn" : 'Game Over',
-          playerOne: widget.playerOne,
-          playerTwo: widget.playerTwo,
-          board: widget.board,
-          winner: winner,
-          playerOneTurn: playerOneTurn,
+          title: widget.gameState.winner == null ? "$playerTurn's Turn" : 'Game Over',
+          gameState: widget.gameState,
           alternatePlayerOneTurn: alternatePlayerOneTurn,
           startOver: startOver,
         ),
-        floatingActionButton: winner == null
+        floatingActionButton: widget.gameState.winner == null
             ? FloatingActionButton(
                 backgroundColor: Colors.blue.shade400,
                 onPressed: confirmMove,

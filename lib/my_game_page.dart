@@ -5,26 +5,18 @@ import 'game_over_screen.dart';
 import 'grid.dart';
 import 'kittens_and_cats.dart';
 import 'player.dart';
-import 'board.dart';
+// import 'board.dart';
 
 class MyGamePage extends StatefulWidget {
   const MyGamePage({
     super.key,
     required this.title,
-    required this.playerOne,
-    required this.playerTwo,
-    required this.board,
-    required this.playerOneTurn,
-    this.winner,
+    required this.gameState,
     required this.alternatePlayerOneTurn,
     required this.startOver,
   });
   final String title;
-  final Player playerOne;
-  final Player playerTwo;
-  final Board board;
-  final bool playerOneTurn;
-  final String? winner;
+  final GameState gameState;
   final Function alternatePlayerOneTurn;
   final Function startOver;
 
@@ -49,20 +41,21 @@ class _MyGamePageState extends State<MyGamePage> {
   @override
   void initState() {
     super.initState();
-    playerOneNameEditingController = TextEditingController(text: widget.playerOne.name);
-    playerTwoNameEditingController = TextEditingController(text: widget.playerTwo.name);
+    playerOneNameEditingController = TextEditingController(text: widget.gameState.playerOne.name);
+    playerTwoNameEditingController = TextEditingController(text: widget.gameState.playerTwo.name);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (widget.winner != null) {
+    if (widget.gameState.winner != null) {
       return GameOverScreen(
-        winner: widget.winner!,
+        winner: widget.gameState.winner!,
         startOver: widget.startOver,
       );
     }
-    final Player activePlayer = widget.playerOneTurn ? widget.playerOne : widget.playerTwo;
-    final Player otherPlayer = widget.playerOneTurn ? widget.playerTwo : widget.playerOne;
+    final Player activePlayer =
+        widget.gameState.playerOneTurn ? widget.gameState.playerOne : widget.gameState.playerTwo;
+    final Player otherPlayer = widget.gameState.playerOneTurn ? widget.gameState.playerTwo : widget.gameState.playerOne;
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
     final double limitingSize = screenHeight > screenWidth ? screenWidth : screenHeight;
@@ -90,7 +83,7 @@ class _MyGamePageState extends State<MyGamePage> {
                   decoration: const InputDecoration(label: Text('Player One Name')),
                   controller: playerOneNameEditingController,
                   onChanged: (value) {
-                    widget.playerOne.name = playerOneNameEditingController.text;
+                    widget.gameState.playerOne.name = playerOneNameEditingController.text;
                   },
                   onEditingComplete: () => refreshMyGamePageState(),
                 ),
@@ -100,7 +93,7 @@ class _MyGamePageState extends State<MyGamePage> {
                   decoration: const InputDecoration(label: Text('Player Two Name')),
                   controller: playerTwoNameEditingController,
                   onChanged: (value) {
-                    widget.playerTwo.name = playerTwoNameEditingController.text;
+                    widget.gameState.playerTwo.name = playerTwoNameEditingController.text;
                     refreshMyGamePageState();
                   },
                 ),
@@ -118,7 +111,7 @@ class _MyGamePageState extends State<MyGamePage> {
                   title: const Text('View GameStates'),
                   onTap: () {
                     List<GameState> allFutureGameStates =
-                        widget.board.generateAllFuturePossibilites(activePlayer, otherPlayer);
+                        widget.gameState.generateAllFuturePossibilites(widget.gameState);
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => ViewGameStatesScreen(
@@ -126,8 +119,8 @@ class _MyGamePageState extends State<MyGamePage> {
                           possibilities: allFutureGameStates,
                           refreshMyGamePageState: refreshMyGamePageState,
                           alternatePlayerOneTurn: widget.alternatePlayerOneTurn,
-                          playerOneTurn: widget.playerOneTurn,
-                          winner: widget.winner,
+                          playerOneTurn: widget.gameState.playerOneTurn,
+                          winner: widget.gameState.winner,
                         ),
                       ),
                     );
@@ -188,11 +181,7 @@ class _MyGamePageState extends State<MyGamePage> {
                     height: gridLength,
                     width: gridLength,
                     child: Grid(
-                      board: widget.board,
-                      playerOne: widget.playerOne,
-                      playerTwo: widget.playerTwo,
-                      playerOneTurn: widget.playerOneTurn,
-                      winner: widget.winner,
+                      gameState: widget.gameState,
                       alternatePlayerOneTurn: widget.alternatePlayerOneTurn,
                       refreshMyGamePageState: refreshMyGamePageState,
                     ),
@@ -209,7 +198,7 @@ class _MyGamePageState extends State<MyGamePage> {
                           children: [
                             Draggable<String>(
                                 onDragStarted: () {
-                                  widget.board.undoLastBoop();
+                                  widget.gameState.board.undoLastBoop();
                                   refreshMyGamePageState();
                                 },
                                 data: 'Cat',
@@ -233,7 +222,7 @@ class _MyGamePageState extends State<MyGamePage> {
                           children: [
                             Draggable<String>(
                               onDragStarted: () {
-                                widget.board.undoLastBoop();
+                                widget.gameState.board.undoLastBoop();
                                 refreshMyGamePageState();
                               },
                               data: 'Kitten',
