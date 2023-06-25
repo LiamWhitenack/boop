@@ -1,15 +1,15 @@
 import 'package:boop/grid.dart';
-import 'package:boop/possibility.dart';
+import 'package:boop/game_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class ViewPossibilitiesScreen extends StatefulWidget {
-  final List<Possibility> possibilities;
+class ViewGameStatesScreen extends StatefulWidget {
+  final List<GameState> possibilities;
   final Function refreshMyGamePageState;
   final Function alternatePlayerOneTurn;
   final bool playerOneTurn;
   final String? winner;
-  const ViewPossibilitiesScreen({
+  const ViewGameStatesScreen({
     super.key,
     required this.possibilities,
     required this.refreshMyGamePageState,
@@ -19,10 +19,10 @@ class ViewPossibilitiesScreen extends StatefulWidget {
   });
 
   @override
-  State<ViewPossibilitiesScreen> createState() => _ViewPossibilitiesScreenState();
+  State<ViewGameStatesScreen> createState() => _ViewGameStatesScreenState();
 }
 
-class _ViewPossibilitiesScreenState extends State<ViewPossibilitiesScreen> {
+class _ViewGameStatesScreenState extends State<ViewGameStatesScreen> {
   int index = 0;
 
   void increaseIndex() {
@@ -42,13 +42,13 @@ class _ViewPossibilitiesScreenState extends State<ViewPossibilitiesScreen> {
   @override
   Widget build(BuildContext context) {
     final focusNode = FocusNode();
-    Possibility mainPossibility = widget.possibilities[index];
+    GameState mainGameState = widget.possibilities[index];
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue.shade400,
         foregroundColor: Colors.white,
         title: const Text(
-          'Possibilities',
+          'GameStates',
           style: TextStyle(fontSize: 25),
         ),
       ),
@@ -76,9 +76,9 @@ class _ViewPossibilitiesScreenState extends State<ViewPossibilitiesScreen> {
                   height: 500,
                   width: 500,
                   child: Grid(
-                    board: mainPossibility.board,
-                    playerOne: mainPossibility.player,
-                    playerTwo: mainPossibility.otherPlayer,
+                    board: mainGameState.board,
+                    playerOne: mainGameState.player,
+                    playerTwo: mainGameState.otherPlayer,
                     refreshMyGamePageState: widget.refreshMyGamePageState,
                     alternatePlayerOneTurn: widget.alternatePlayerOneTurn,
                     playerOneTurn: widget.playerOneTurn,
@@ -88,11 +88,12 @@ class _ViewPossibilitiesScreenState extends State<ViewPossibilitiesScreen> {
                 const SizedBox(width: 100),
                 Column(
                   children: [
-                    Text('Other Kittens: ${mainPossibility.otherPlayer.tempKittens.length}'),
-                    Text('Other Cats: ${mainPossibility.otherPlayer.tempCats.length}'),
-                    Text('My Kittens: ${mainPossibility.player.tempKittens.length}'),
-                    Text('My Cats: ${mainPossibility.player.tempCats.length}'),
-                    Text('Score: ${mainPossibility.score}'),
+                    Text('Other Kittens: ${mainGameState.otherPlayer.tempKittens.length}'),
+                    Text('Other Cats: ${mainGameState.otherPlayer.tempCats.length}'),
+                    Text('My Kittens: ${mainGameState.player.tempKittens.length}'),
+                    Text('My Cats: ${mainGameState.player.tempCats.length}'),
+                    Text('Score: ${mainGameState.score}'),
+                    Text('Score from Positioning: ${mainGameState.scoreFromPositioning}'),
                   ],
                 ),
               ],

@@ -1,6 +1,6 @@
 // ignore_for_file: avoid_print
 
-import 'package:boop/possibility.dart';
+import 'package:boop/game_state.dart';
 import 'package:flutter/material.dart';
 
 import 'kittens_and_cats.dart';
@@ -443,10 +443,10 @@ class Board {
     }
   }
 
-  List<Possibility> generateAllFuturePossibilites(Player player, Player otherPlayer) {
+  List<GameState> generateAllFuturePossibilites(Player player, Player otherPlayer) {
     // late Player playerClone;
     // late Player otherPlayerClone;
-    List<Possibility> result = [];
+    List<GameState> result = [];
     for (int row = 0; row < 6; row++) {
       for (int column = 0; column < 6; column++) {
         if (tempGrid[row][column] != null) continue;
@@ -454,38 +454,38 @@ class Board {
         Player playerClone = player.clone();
         Player otherPlayerClone = otherPlayer.clone();
         if (player.tempCats.isNotEmpty) {
-          Possibility catPossibility = generateFuturePossibilityWithCat(
+          GameState catGameState = generateFutureGameStateWithCat(
               clone(playerClone, otherPlayerClone), row, column, playerClone, otherPlayerClone, winner);
-          catPossibility.player.tempCats =
-              List.filled(catPossibility.player.tempKittens.length, Cat(playerClone), growable: true);
-          catPossibility.otherPlayer.tempCats =
-              List.filled(catPossibility.otherPlayer.tempKittens.length, Cat(otherPlayerClone), growable: true);
-          catPossibility.scoreGrid();
-          result.add(catPossibility);
+          catGameState.player.tempCats =
+              List.filled(catGameState.player.tempKittens.length, Cat(playerClone), growable: true);
+          catGameState.otherPlayer.tempCats =
+              List.filled(catGameState.otherPlayer.tempKittens.length, Cat(otherPlayerClone), growable: true);
+          catGameState.updateScore();
+          result.add(catGameState);
         }
         if (player.tempKittens.isNotEmpty) {
-          Possibility kittenPossibility = generateFuturePossibilityWithKitten(
+          GameState kittenGameState = generateFutureGameStateWithKitten(
               clone(playerClone, otherPlayerClone), row, column, playerClone, otherPlayerClone, winner);
 
-          kittenPossibility.player.tempKittens =
-              List.filled(kittenPossibility.player.tempKittens.length, Kitten(playerClone), growable: true);
-          kittenPossibility.otherPlayer.tempKittens =
-              List.filled(kittenPossibility.otherPlayer.tempKittens.length, Kitten(otherPlayerClone), growable: true);
-          kittenPossibility.scoreGrid();
+          kittenGameState.player.tempKittens =
+              List.filled(kittenGameState.player.tempKittens.length, Kitten(playerClone), growable: true);
+          kittenGameState.otherPlayer.tempKittens =
+              List.filled(kittenGameState.otherPlayer.tempKittens.length, Kitten(otherPlayerClone), growable: true);
+          kittenGameState.updateScore();
 
-          result.add(kittenPossibility);
+          result.add(kittenGameState);
         }
       }
     }
-    return sortPossibilities(result);
+    return sortGameStates(result);
   }
 
-  List<Possibility> sortPossibilities(List<Possibility> list) {
+  List<GameState> sortGameStates(List<GameState> list) {
     list.sort((a, b) => a.score.compareTo(b.score));
     return list.reversed.toList();
   }
 
-  Possibility generateFuturePossibilityWithCat(
+  GameState generateFutureGameStateWithCat(
     Board board,
     int row,
     int column,
@@ -519,14 +519,14 @@ class Board {
     winner = board.checkForWin();
     board.upgradeThreeInARows();
 
-    return Possibility(
+    return GameState(
       board,
       playerClone,
       otherPlayerClone,
     );
   }
 
-  Possibility generateFuturePossibilityWithKitten(
+  GameState generateFutureGameStateWithKitten(
     Board board,
     int row,
     int column,
@@ -561,7 +561,7 @@ class Board {
     winner = board.checkForWin();
     board.upgradeThreeInARows();
 
-    return Possibility(
+    return GameState(
       board,
       playerClone,
       otherPlayerClone,

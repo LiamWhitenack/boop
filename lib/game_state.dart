@@ -4,19 +4,14 @@ import 'package:boop/board.dart';
 import 'kittens_and_cats.dart';
 import 'player.dart';
 
-class Possibility {
+class GameState {
   // positive: advantage for player deciding
   // negative: advantage for other player
   double score = 0.0;
-
-  // // indicates the player looking at future possibility
-  // Player player;
-
-  // int row;
-  // int column;
-  // String? winner;
-  // // ignore: prefer_typing_uninitialized_variables
-  // var pieceType;
+  late double scoreFromPositioning;
+  late double scoreFromPieceProximity;
+  late double scoreFromUpgrading;
+  late double scoreFromWinning;
 
   // future possibility
   Board board;
@@ -24,7 +19,7 @@ class Possibility {
   Player player;
   Player otherPlayer;
 
-  Possibility(
+  GameState(
     this.board,
     this.player,
     this.otherPlayer,
@@ -36,10 +31,14 @@ class Possibility {
   );
 
   void updateScore() {
-    score = scoreGrid();
+    double newScore = 0.0;
+    scoreFromPositioning = scorePositioning();
+
+    score = newScore + scoreFromPositioning;
   }
 
-  double scoreGrid() {
+  double scorePositioning() {
+    double score = 0.0;
     for (int row = 0; row < 6; row++) {
       for (int column = 0; column < 6; column++) {
         if (board.tempGrid[row][column] != null) {
