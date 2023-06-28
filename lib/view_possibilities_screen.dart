@@ -89,8 +89,10 @@ class _ViewGameStatesScreenState extends State<ViewGameStatesScreen> {
                     Text('Grey Kittens: ${mainGameState.playerTwo.tempKittens.length}'),
                     Text('Grey Cats: ${mainGameState.playerTwo.tempCats.length}'),
                     const Text(''),
-                    Text('Score: ${mainGameState.score}'),
-                    Text('Score from Positioning: ${mainGameState.scoreFromPositioning}'),
+                    Text('Score: ${mainGameState.score.toStringAsPrecision(4)}'),
+                    Text('Score From Positioning: ${mainGameState.scoreFromPositioning.toStringAsPrecision(4)}'),
+                    Text(
+                        'Score From Proximity to Other Owned Pieces: ${mainGameState.scoreFromPieceProximity.toStringAsPrecision(4)}'),
                   ],
                 ),
               ],
