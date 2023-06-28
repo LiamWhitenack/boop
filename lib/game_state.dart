@@ -11,6 +11,7 @@ class GameState {
   double score = 0.0;
   late double scoreFromPositioning = 0.0;
   late double scoreFromPieceProximity = 0.0;
+  late double scoreFromTwoInARows = 0.0;
   late double scoreFromUpgrading = 0.0;
   late double scoreFromWinning = 0.0;
 
@@ -43,13 +44,14 @@ class GameState {
   }
 
   void updateScore() {
-    double newScore = 0.0;
     scoreFromPositioning = scorePositioning();
     scoreFromPieceProximity = scoreAverageDistanceBetweenPlayersPieces();
+    scoreFromTwoInARows = scoreTwoInARows();
     scoreFromUpgrading = scorePieceIncrease();
     scoreFromWinning = scoreWinPotential();
 
-    score = newScore + scoreFromPositioning + scoreFromPieceProximity + scoreFromUpgrading + scoreFromWinning;
+    score =
+        scoreFromPositioning + scoreFromPieceProximity + scoreFromTwoInARows + scoreFromUpgrading + scoreFromWinning;
   }
 
   double scorePositioning() {
@@ -119,6 +121,60 @@ class GameState {
     }
 
     return 3 - sumDistances / countPlayersPieces + otherSumDistances / otherCountPlayersPieces;
+  }
+
+  double scoreTwoInARows() {
+    Map<Player, double> counts = {activePlayer: 0, otherPlayer: 0};
+    Player tempPlayer;
+
+    // Check rows
+    for (int row = 0; row < 6; row++) {
+      for (int column = 0; column < 5; column++) {
+        if (board.tempGrid[row][column] == null) continue;
+        if (board.tempGrid[row][column + 1] == null) continue;
+        tempPlayer = board.tempGrid[row][column].player;
+        if (tempPlayer == board.tempGrid[row][column + 1].player) {
+          counts[tempPlayer] = counts[tempPlayer]! + 1;
+        }
+      }
+    }
+
+    // Check columns
+    for (int column = 0; column < 6; column++) {
+      for (int row = 0; row < 5; row++) {
+        if (board.tempGrid[row][column] == null) continue;
+        if (board.tempGrid[row + 1][column] == null) continue;
+        tempPlayer = board.tempGrid[row][column].player;
+        if (tempPlayer == board.tempGrid[row + 1][column].player) {
+          counts[tempPlayer] = counts[tempPlayer]! + 1;
+        }
+      }
+    }
+
+    // Check diagonals (top-left to bottom-right)
+    for (int row = 0; row < 5; row++) {
+      for (int column = 0; column < 5; column++) {
+        if (board.tempGrid[row][column] == null) continue;
+        if (board.tempGrid[row + 1][column + 1] == null) continue;
+        tempPlayer = board.tempGrid[row][column].player;
+        if (tempPlayer == board.tempGrid[row + 1][column + 1].player) {
+          counts[tempPlayer] = counts[tempPlayer]! + 1;
+        }
+      }
+    }
+
+    // Check diagonals (top-right to bottom-left)
+    for (int row = 0; row < 4; row++) {
+      for (int column = 1; column < 6; column++) {
+        if (board.tempGrid[row][column] == null) continue;
+        if (board.tempGrid[row + 1][column - 1] == null) continue;
+        tempPlayer = board.tempGrid[row][column].player;
+        if (tempPlayer == board.tempGrid[row + 1][column - 1].player) {
+          counts[tempPlayer] = counts[tempPlayer]! + 1;
+        }
+      }
+    }
+    return 2 * (counts[activePlayer]! - counts[otherPlayer]!);
   }
 
   double scorePieceIncrease() {
@@ -274,5 +330,17 @@ class GameState {
     board.upgradeThreeInARows();
 
     return GameState(board, board.playerOne, board.playerTwo, playerOneTurn, winner);
+  }
+
+  GameState clone() {
+    Player playerOneClone = playerOne.clone();
+    Player playerTwoClone = playerOne.clone();
+    return GameState(
+      board.clone(playerOneClone, playerTwoClone),
+      playerOneClone,
+      playerTwoClone,
+      playerOneTurn,
+      winner,
+    );
   }
 }

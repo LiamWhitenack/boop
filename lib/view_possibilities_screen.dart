@@ -93,6 +93,7 @@ class _ViewGameStatesScreenState extends State<ViewGameStatesScreen> {
                     Text('Score From Positioning: ${mainGameState.scoreFromPositioning.toStringAsPrecision(4)}'),
                     Text(
                         'Score From Proximity to Other Owned Pieces: ${mainGameState.scoreFromPieceProximity.toStringAsPrecision(4)}'),
+                    Text('Score From Two in a Rows: ${mainGameState.scoreFromTwoInARows.toStringAsPrecision(4)}'),
                     Text('Score From Piece Count Increase: ${mainGameState.scoreFromUpgrading.toStringAsPrecision(4)}'),
                     Text('Score From Potential to Win: ${mainGameState.scoreFromWinning.toStringAsPrecision(4)}'),
                   ],
