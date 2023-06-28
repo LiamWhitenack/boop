@@ -29,7 +29,7 @@ class _GridState extends State<Grid> {
   @override
   Widget build(BuildContext context) {
     if (widget.gameState.winner != null) {
-      return Text('${widget.gameState.winner} wins!');
+      return Center(child: Text('${widget.gameState.winner} wins!'));
     }
 
     Player activePlayer = widget.gameState.playerOneTurn ? widget.gameState.playerOne : widget.gameState.playerTwo;

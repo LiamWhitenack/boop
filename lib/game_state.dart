@@ -1,6 +1,7 @@
 // import 'playerOne.dart';
 
 import 'package:boop/board.dart';
+import 'package:flutter/material.dart';
 import 'kittens_and_cats.dart';
 import 'player.dart';
 
@@ -8,16 +9,18 @@ class GameState {
   // positive: advantage for playerOne deciding
   // negative: advantage for other playerOne
   double score = 0.0;
-  late double scoreFromPositioning;
-  late double scoreFromPieceProximity;
-  late double scoreFromUpgrading;
-  late double scoreFromWinning;
+  late double scoreFromPositioning = 0.0;
+  late double scoreFromPieceProximity = 0.0;
+  late double scoreFromUpgrading = 0.0;
+  late double scoreFromWinning = 0.0;
 
   // future possibility
   Board board;
 
   Player playerOne;
   Player playerTwo;
+  late Player activePlayer;
+  late Player otherPlayer;
 
   bool playerOneTurn;
 
@@ -30,15 +33,23 @@ class GameState {
     this.playerOneTurn,
     this.winner,
   ) {
+    activePlayer = playerOneTurn ? playerOne : playerTwo;
+    otherPlayer = playerOneTurn ? playerTwo : playerOne;
     updateScore();
+    board.colorGrid = List.filled(6, List.filled(6, Colors.blue.shade300));
+    board.updateGrid();
+    playerOne.updateKittensAndCats();
+    playerTwo.updateKittensAndCats();
   }
 
   void updateScore() {
     double newScore = 0.0;
     scoreFromPositioning = scorePositioning();
     scoreFromPieceProximity = scoreAverageDistanceBetweenPlayersPieces();
+    scoreFromUpgrading = scorePieceIncrease();
+    scoreFromWinning = scoreWinPotential();
 
-    score = newScore + scoreFromPositioning + scoreFromPieceProximity;
+    score = newScore + scoreFromPositioning + scoreFromPieceProximity + scoreFromUpgrading + scoreFromWinning;
   }
 
   double scorePositioning() {
@@ -73,8 +84,6 @@ class GameState {
     int otherSumDistances = 0;
     int otherCountPlayersPieces = 0;
     int otherDistance;
-    Player activePlayer = playerOneTurn ? playerOne : playerTwo;
-    Player otherPlayer = playerOneTurn ? playerTwo : playerOne;
 
     for (int i = 0; i < board.tempGrid.length; i++) {
       for (int j = 0; j < board.tempGrid[i].length; j++) {
@@ -114,6 +123,26 @@ class GameState {
 
   double scorePieceIncrease() {
     double score = 0.0;
+    Player activePlayer = playerOneTurn ? playerOne : playerTwo;
+    Player otherPlayer = playerOneTurn ? playerTwo : playerOne;
+    score = score + 3 * (activePlayer.tempCats.length - activePlayer.cats.length);
+    score = score - 3 * (otherPlayer.tempCats.length - otherPlayer.cats.length);
+    score = score + (activePlayer.tempKittens.length - activePlayer.kittens.length);
+    score = score - (otherPlayer.tempKittens.length - otherPlayer.kittens.length);
+
+    return score;
+  }
+
+  double scoreWinPotential() {
+    double score = 0.0;
+
+    // winner = board.checkForWin();
+    if (winner == activePlayer.name) {
+      score = score + 9999;
+    }
+    if (winner == otherPlayer.name) {
+      score = score - 9999;
+    }
 
     return score;
   }
