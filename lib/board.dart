@@ -439,7 +439,9 @@ class Board {
     }
   }
 
-  Board clone(Player playerOneClone, Player playerTwoClone) {
+  Board clone(Player playerOne, Player playerTwo) {
+    Player playerOneClone = playerOne.clone();
+    Player playerTwoClone = playerTwo.clone();
     Board clone = Board(playerOneClone, playerTwoClone);
     clone.tempGrid = deepCopyMatrix(tempGrid);
     for (int row = 0; row < 6; row++) {

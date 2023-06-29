@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'game_over_screen.dart';
 import 'grid.dart';
 import 'kittens_and_cats.dart';
-import 'player.dart';
 // import 'board.dart';
 
 class MyGamePage extends StatefulWidget {
@@ -14,11 +13,13 @@ class MyGamePage extends StatefulWidget {
     required this.gameState,
     required this.alternatePlayerOneTurn,
     required this.startOver,
+    required this.loadGameState,
   });
   final String title;
   final GameState gameState;
   final Function alternatePlayerOneTurn;
   final Function startOver;
+  final Function loadGameState;
 
   @override
   State<MyGamePage> createState() => _MyGamePageState();
@@ -34,7 +35,6 @@ class _MyGamePageState extends State<MyGamePage> {
   late TextEditingController playerTwoNameEditingController;
 
   void refreshMyGamePageState() {
-    // widget.alternatePlayerOneTurn();
     setState(() {});
   }
 
@@ -53,9 +53,6 @@ class _MyGamePageState extends State<MyGamePage> {
         startOver: widget.startOver,
       );
     }
-    final Player activePlayer =
-        widget.gameState.playerOneTurn ? widget.gameState.playerOne : widget.gameState.playerTwo;
-    final Player otherPlayer = widget.gameState.playerOneTurn ? widget.gameState.playerTwo : widget.gameState.playerOne;
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
     final double limitingSize = screenHeight > screenWidth ? screenWidth : screenHeight;
@@ -141,36 +138,37 @@ class _MyGamePageState extends State<MyGamePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // cats
-                  otherPlayer.tempCats.isNotEmpty
+                  widget.gameState.otherPlayer.tempCats.isNotEmpty
                       // true
                       ? Row(
                           children: [
-                            CatWidget(catColor: otherPlayer.color),
+                            CatWidget(catColor: widget.gameState.otherPlayer.color),
                             Text(
-                              ' x ${otherPlayer.tempCats.length}',
-                              style: TextStyle(fontSize: gridLength * 0.08, color: otherPlayer.color),
+                              ' x ${widget.gameState.otherPlayer.tempCats.length}',
+                              style: TextStyle(fontSize: gridLength * 0.08, color: widget.gameState.otherPlayer.color),
                             ),
                           ],
                         )
-                      : const SizedBox(),
+                      : SizedBox(height: gridLength * 0.08),
                   // space between
-                  otherPlayer.tempCats.isNotEmpty && otherPlayer.tempKittens.isNotEmpty
+                  widget.gameState.otherPlayer.tempCats.isNotEmpty &&
+                          widget.gameState.otherPlayer.tempKittens.isNotEmpty
                       ? SizedBox(width: gridLength * 0.1)
                       : const SizedBox(),
                   // kittens
                   // ignore: sized_box_for_whitespace
-                  otherPlayer.tempKittens.isNotEmpty
+                  widget.gameState.otherPlayer.tempKittens.isNotEmpty
                       ? Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            KittenWidget(kittenColor: otherPlayer.color),
+                            KittenWidget(kittenColor: widget.gameState.otherPlayer.color),
                             Text(
-                              ' x ${otherPlayer.tempKittens.length}',
-                              style: TextStyle(fontSize: gridLength * 0.08, color: otherPlayer.color),
+                              ' x ${widget.gameState.otherPlayer.tempKittens.length}',
+                              style: TextStyle(fontSize: gridLength * 0.08, color: widget.gameState.otherPlayer.color),
                             ),
                           ],
                         )
-                      : const SizedBox(),
+                      : SizedBox(height: gridLength * 0.08),
                 ],
               ),
 
@@ -192,7 +190,7 @@ class _MyGamePageState extends State<MyGamePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // cats
-                  activePlayer.tempCats.isNotEmpty
+                  widget.gameState.activePlayer.tempCats.isNotEmpty
                       // true
                       ? Row(
                           children: [
@@ -202,21 +200,22 @@ class _MyGamePageState extends State<MyGamePage> {
                                   refreshMyGamePageState();
                                 },
                                 data: 'Cat',
-                                feedback: CatWidget(catColor: activePlayer.color),
-                                child: CatWidget(catColor: activePlayer.color)),
+                                feedback: CatWidget(catColor: widget.gameState.activePlayer.color),
+                                child: CatWidget(catColor: widget.gameState.activePlayer.color)),
                             Text(
-                              ' x ${activePlayer.tempCats.length}',
-                              style: TextStyle(fontSize: gridLength * 0.08, color: activePlayer.color),
+                              ' x ${widget.gameState.activePlayer.tempCats.length}',
+                              style: TextStyle(fontSize: gridLength * 0.08, color: widget.gameState.activePlayer.color),
                             ),
                           ],
                         )
                       : const SizedBox(),
                   // space between
-                  activePlayer.tempCats.isNotEmpty && activePlayer.tempKittens.isNotEmpty
+                  widget.gameState.activePlayer.tempCats.isNotEmpty &&
+                          widget.gameState.activePlayer.tempKittens.isNotEmpty
                       ? SizedBox(width: gridLength * 0.1)
                       : const SizedBox(),
                   // tempKittens
-                  activePlayer.tempKittens.isNotEmpty
+                  widget.gameState.activePlayer.tempKittens.isNotEmpty
                       ? Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
@@ -226,12 +225,12 @@ class _MyGamePageState extends State<MyGamePage> {
                                 refreshMyGamePageState();
                               },
                               data: 'Kitten',
-                              feedback: KittenWidget(kittenColor: activePlayer.color),
-                              child: KittenWidget(kittenColor: activePlayer.color),
+                              feedback: KittenWidget(kittenColor: widget.gameState.activePlayer.color),
+                              child: KittenWidget(kittenColor: widget.gameState.activePlayer.color),
                             ),
                             Text(
-                              ' x ${activePlayer.tempKittens.length}',
-                              style: TextStyle(fontSize: gridLength * 0.08, color: activePlayer.color),
+                              ' x ${widget.gameState.activePlayer.tempKittens.length}',
+                              style: TextStyle(fontSize: gridLength * 0.08, color: widget.gameState.activePlayer.color),
                             ),
                           ],
                         )

@@ -36,8 +36,16 @@ class GameState {
   ) {
     activePlayer = playerOneTurn ? playerOne : playerTwo;
     otherPlayer = playerOneTurn ? playerTwo : playerOne;
-    updateScore();
-    board.colorGrid = List.filled(6, List.filled(6, Colors.blue.shade300));
+    // updateScore();
+    board.colorGrid = List.filled(6, List.filled(6, Colors.blue.shade200));
+  }
+
+  void updateActivePlayer() {
+    activePlayer = playerOneTurn ? playerOne : playerTwo;
+    otherPlayer = playerOneTurn ? playerTwo : playerOne;
+  }
+
+  void updateValues() {
     board.updateGrid();
     playerOne.updateKittensAndCats();
     playerTwo.updateKittensAndCats();
@@ -216,32 +224,13 @@ class GameState {
         Player activePlayer = gameState.playerOneTurn ? playerOneClone : playerTwoClone;
 
         if (activePlayer.tempCats.isNotEmpty) {
-          GameState catGameState = generateFutureGameStateWithCat(
-            gameState.board.clone(playerOneClone, playerTwoClone),
-            row,
-            column,
-            activePlayer,
-            playerOneTurn,
-            winner,
-          );
-
+          GameState catGameState = generateFutureGameStateWithCat(row, column);
+          catGameState.updateScore();
           result.add(catGameState);
         }
         if (activePlayer.tempKittens.isNotEmpty) {
-          GameState kittenGameState = generateFutureGameStateWithKitten(
-            gameState.board.clone(playerOneClone, playerTwoClone),
-            row,
-            column,
-            activePlayer,
-            playerOneTurn,
-            winner,
-          );
-
-          // kittenGameState.playerOne.tempKittens =
-          //     List.filled(kittenGameState.playerOne.tempKittens.length, Kitten(activePlayerClone), growable: true);
-          // kittenGameState.playerTwo.tempKittens =
-          //     List.filled(kittenGameState.playerTwo.tempKittens.length, Kitten(otherPlayerClone), growable: true);
-
+          GameState kittenGameState = generateFutureGameStateWithKitten(row, column);
+          kittenGameState.updateScore();
           result.add(kittenGameState);
         }
       }
@@ -255,13 +244,12 @@ class GameState {
   }
 
   GameState generateFutureGameStateWithCat(
-    Board board,
     int row,
     int column,
-    Player activePlayer,
-    bool playerOneTurn,
-    String? winner,
   ) {
+    Board newBoard = board.clone(playerOne, playerTwo);
+    Player tempActivePlayer = playerOneTurn ? newBoard.playerOne : newBoard.playerTwo;
+
     List<int> validCoordinates = [0, 1, 2, 3, 4, 5];
     // return if the piece isn't placed on an open spot
     if (board.tempGrid[row][column] != null) {
@@ -269,7 +257,7 @@ class GameState {
     }
 
     // return if the player is out of cats to place
-    if (activePlayer.tempCats.isEmpty) {
+    if (tempActivePlayer.tempCats.isEmpty) {
       throw Exception('not enough cats to place!');
     }
 
@@ -278,39 +266,35 @@ class GameState {
         if (!validCoordinates.contains(row + i) || !validCoordinates.contains(column + j)) {
           continue;
         }
-        board.boopCatInGivenDirection(row, column, i, j, activePlayer);
+        newBoard.boopCatInGivenDirection(row, column, i, j, tempActivePlayer);
       }
     }
 
-    activePlayer.tempCats.removeAt(0);
-    board.tempGrid[row][column] = Cat(activePlayer);
+    tempActivePlayer.tempCats.removeAt(0);
+    newBoard.tempGrid[row][column] = Cat(tempActivePlayer);
 
-    board.updateColorMatrix();
-    winner = board.checkForWin();
-    board.upgradeThreeInARows();
+    newBoard.updateColorMatrix();
+    winner = newBoard.checkForWin();
+    newBoard.upgradeThreeInARows();
 
-    return GameState(board, board.playerOne, board.playerTwo, playerOneTurn, winner);
+    return GameState(newBoard, newBoard.playerOne, newBoard.playerTwo, playerOneTurn, winner);
   }
 
   GameState generateFutureGameStateWithKitten(
-    Board board,
     int row,
     int column,
-    Player activePlayer,
-    bool playerOneTurn,
-    String? winner,
   ) {
-    board.undoLastBoop();
+    Board newBoard = board.clone(playerOne, playerTwo);
+    Player tempActivePlayer = playerOneTurn ? newBoard.playerOne : newBoard.playerTwo;
 
     List<int> validCoordinates = [0, 1, 2, 3, 4, 5];
-
     // return if the piece isn't placed on an open spot
     if (board.tempGrid[row][column] != null) {
       throw Exception('please place on open spot');
     }
 
     // return if the player is out of cats to place
-    if (activePlayer.tempKittens.isEmpty) {
+    if (tempActivePlayer.tempKittens.isEmpty) {
       throw Exception('not enough kittens to place!');
     }
 
@@ -319,17 +303,26 @@ class GameState {
         if (!validCoordinates.contains(row + i) || !validCoordinates.contains(column + j)) {
           continue;
         }
-        board.boopCatInGivenDirection(row, column, i, j, activePlayer);
+        newBoard.boopKittenInGivenDirection(row, column, i, j, tempActivePlayer);
       }
     }
 
-    activePlayer.tempKittens.removeAt(0);
-    board.tempGrid[row][column] = Kitten(activePlayer);
+    tempActivePlayer.tempKittens.removeAt(0);
+    newBoard.tempGrid[row][column] = Kitten(tempActivePlayer);
 
-    winner = board.checkForWin();
-    board.upgradeThreeInARows();
+    newBoard.updateColorMatrix();
+    winner = newBoard.checkForWin();
+    newBoard.upgradeThreeInARows();
 
-    return GameState(board, board.playerOne, board.playerTwo, playerOneTurn, winner);
+    return GameState(newBoard, newBoard.playerOne, newBoard.playerTwo, playerOneTurn, winner);
+  }
+
+  void conform(GameState gameState) {
+    board = gameState.board;
+    playerOne = gameState.playerOne;
+    playerTwo = gameState.playerTwo;
+    playerOneTurn = gameState.playerOneTurn;
+    winner = gameState.winner;
   }
 
   GameState clone() {

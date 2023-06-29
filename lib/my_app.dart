@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:boop/game_state.dart';
 import 'package:flutter/material.dart';
 import 'my_game_page.dart';
@@ -16,31 +18,88 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  void loadGameState(GameState gameState) {
+    widget.gameState.conform(gameState);
+    widget.gameState.winner = widget.gameState.board.checkForWin();
+    setState(() {});
+  }
+
   void confirmMove() {
     // this will usually return null, otherwise winning player's name
     widget.gameState.winner = widget.gameState.board.checkForWin();
-    alternatePlayerOneTurn();
-    widget.gameState.board.updateGrid();
-
-    // widget.board.upgradeThreeInARows();
-
-    widget.gameState.board.playerOne.updateKittensAndCats();
-    widget.gameState.board.playerTwo.updateKittensAndCats();
+    alternatePlayerOneTurnAgainstIntelligentAI();
 
     setState(() {});
   }
 
-  void alternatePlayerOneTurn() {
-    Player activePlayer = widget.gameState.playerOneTurn ? widget.gameState.playerOne : widget.gameState.playerTwo;
-    Player otherPlayer = widget.gameState.playerOneTurn ? widget.gameState.playerTwo : widget.gameState.playerOne;
-    if (otherPlayer.kittens.isEmpty && activePlayer.cats.isEmpty) {
-      return;
+  void alternatePlayerOneTurnAgainstRandomAI() {
+    Player otherPlayer;
+    GameState future;
+    while (true) {
+      otherPlayer = widget.gameState.playerOneTurn ? widget.gameState.playerTwo : widget.gameState.playerOne;
+      if (widget.gameState.board.boardChanged()) {
+        widget.gameState.board.updateGrid();
+        widget.gameState.board.playerOne.updateKittensAndCats();
+        widget.gameState.board.playerTwo.updateKittensAndCats();
+        if (otherPlayer.kittens.isEmpty && otherPlayer.cats.isEmpty) {
+          return;
+        }
+        widget.gameState.playerOneTurn = !widget.gameState.playerOneTurn;
+        widget.gameState.updateActivePlayer();
+        if (otherPlayer.automaticallyTakeTurns) {
+          var rng = Random();
+          int rowToPlace = rng.nextInt(6);
+          int columnToPlace = rng.nextInt(6);
+          if (otherPlayer.kittens.isEmpty) {
+            future = widget.gameState.generateFutureGameStateWithCat(rowToPlace, columnToPlace);
+          } else if (otherPlayer.cats.isEmpty) {
+            future = widget.gameState.generateFutureGameStateWithKitten(rowToPlace, columnToPlace);
+          } else {
+            bool kittenOrCat = rng.nextBool();
+            if (kittenOrCat) {
+              future = widget.gameState.generateFutureGameStateWithCat(rowToPlace, columnToPlace);
+            } else {
+              future = widget.gameState.generateFutureGameStateWithKitten(rowToPlace, columnToPlace);
+            }
+          }
+          loadGameState(future);
+          setState(() {});
+        } else {
+          return;
+        }
+      } else {
+        widget.gameState.updateActivePlayer();
+        return;
+      }
     }
-    if (widget.gameState.board.boardChanged()) {
-      widget.gameState.playerOneTurn = !widget.gameState.playerOneTurn;
-      return;
+  }
+
+  void alternatePlayerOneTurnAgainstIntelligentAI() {
+    Player otherPlayer;
+    GameState future;
+    while (true) {
+      otherPlayer = widget.gameState.playerOneTurn ? widget.gameState.playerTwo : widget.gameState.playerOne;
+      if (widget.gameState.board.boardChanged()) {
+        widget.gameState.board.updateGrid();
+        widget.gameState.board.playerOne.updateKittensAndCats();
+        widget.gameState.board.playerTwo.updateKittensAndCats();
+        if (otherPlayer.kittens.isEmpty && otherPlayer.cats.isEmpty) {
+          return;
+        }
+        widget.gameState.playerOneTurn = !widget.gameState.playerOneTurn;
+        widget.gameState.updateActivePlayer();
+        if (otherPlayer.automaticallyTakeTurns) {
+          future = widget.gameState.generateAllFuturePossibilites(widget.gameState)[0];
+          loadGameState(future);
+          setState(() {});
+        } else {
+          return;
+        }
+      } else {
+        widget.gameState.updateActivePlayer();
+        return;
+      }
     }
-    return;
   }
 
   void startOver() {
@@ -68,8 +127,9 @@ class _MyAppState extends State<MyApp> {
         body: MyGamePage(
           title: widget.gameState.winner == null ? "$playerTurn's Turn" : 'Game Over',
           gameState: widget.gameState,
-          alternatePlayerOneTurn: alternatePlayerOneTurn,
+          alternatePlayerOneTurn: alternatePlayerOneTurnAgainstIntelligentAI,
           startOver: startOver,
+          loadGameState: loadGameState,
         ),
         floatingActionButton: widget.gameState.winner == null
             ? FloatingActionButton(

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'kittens_and_cats.dart';
 
 class Player {
-  late List<Kitten> kittens;
-  late List<Kitten> tempKittens;
+  late List<Kitten> kittens = [];
+  late List<Kitten> tempKittens = [];
   List<Cat> cats = [];
   List<Cat> tempCats = [];
   String name;
@@ -14,6 +14,8 @@ class Player {
   Player(this.name, this.color) {
     kittens = List.filled(8, Kitten(this), growable: true);
     tempKittens = List.filled(8, Kitten(this), growable: true);
+    // cats = List.filled(8, Cat(this), growable: true);
+    // tempCats = List.filled(8, Cat(this), growable: true);
     // cats = [Cat(this)]; // for testing only
     // tempCats = [Cat(this)];
   }
@@ -55,6 +57,7 @@ class Player {
     clone.tempKittens = List.filled(tempKittens.length, Kitten(clone), growable: true);
     clone.cats = List.filled(tempCats.length, Cat(clone), growable: true);
     clone.tempCats = List.filled(tempCats.length, Cat(clone), growable: true);
+    clone.automaticallyTakeTurns = automaticallyTakeTurns;
     return clone;
   }
 }

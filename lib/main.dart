@@ -10,6 +10,7 @@ void main() {
   Player playerTwo = Player('Jack', Colors.grey);
   playerTwo.automaticallyTakeTurns = true;
   GameState mainGameState = GameState(Board(playerOne, playerTwo), playerOne, playerTwo, true, null);
+
   // playGame();
   runApp(
     MyApp(
