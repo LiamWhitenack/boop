@@ -1,7 +1,6 @@
 // import 'playerOne.dart';
 
 import 'package:boop/board.dart';
-import 'package:flutter/material.dart';
 import 'kittens_and_cats.dart';
 import 'player.dart';
 
@@ -34,10 +33,8 @@ class GameState {
     this.playerOneTurn,
     this.winner,
   ) {
-    activePlayer = playerOneTurn ? playerOne : playerTwo;
-    otherPlayer = playerOneTurn ? playerTwo : playerOne;
     // updateScore();
-    board.colorGrid = List.filled(6, List.filled(6, Colors.blue.shade200));
+    updateActivePlayer();
   }
 
   void updateActivePlayer() {
@@ -63,7 +60,6 @@ class GameState {
   }
 
   double scorePositioning() {
-    Player activePlayer = playerOneTurn ? playerOne : playerTwo;
     double score = 0.0;
     for (int row = 0; row < 6; row++) {
       for (int column = 0; column < 6; column++) {
@@ -187,8 +183,6 @@ class GameState {
 
   double scorePieceIncrease() {
     double score = 0.0;
-    Player activePlayer = playerOneTurn ? playerOne : playerTwo;
-    Player otherPlayer = playerOneTurn ? playerTwo : playerOne;
     score = score + 3 * (activePlayer.tempCats.length - activePlayer.cats.length);
     score = score - 3 * (otherPlayer.tempCats.length - otherPlayer.cats.length);
     score = score + (activePlayer.tempKittens.length - activePlayer.kittens.length);
@@ -219,18 +213,19 @@ class GameState {
       for (int column = 0; column < 6; column++) {
         if (gameState.board.tempGrid[row][column] != null) continue;
         if (gameState.board.grid[row][column] != null) continue;
-        Player playerOneClone = playerOne.clone();
-        Player playerTwoClone = playerTwo.clone();
-        Player activePlayer = gameState.playerOneTurn ? playerOneClone : playerTwoClone;
 
         if (activePlayer.tempCats.isNotEmpty) {
           GameState catGameState = generateFutureGameStateWithCat(row, column);
           catGameState.updateScore();
+          catGameState.playerOneTurn = !catGameState.playerOneTurn;
+          catGameState.updateActivePlayer();
           result.add(catGameState);
         }
         if (activePlayer.tempKittens.isNotEmpty) {
           GameState kittenGameState = generateFutureGameStateWithKitten(row, column);
           kittenGameState.updateScore();
+          kittenGameState.playerOneTurn = !kittenGameState.playerOneTurn;
+          kittenGameState.updateActivePlayer();
           result.add(kittenGameState);
         }
       }
@@ -277,7 +272,10 @@ class GameState {
     winner = newBoard.checkForWin();
     newBoard.upgradeThreeInARows();
 
-    return GameState(newBoard, newBoard.playerOne, newBoard.playerTwo, playerOneTurn, winner);
+    GameState result = GameState(newBoard, newBoard.playerOne, newBoard.playerTwo, playerOneTurn, winner);
+    result.updateValues();
+
+    return result;
   }
 
   GameState generateFutureGameStateWithKitten(
@@ -314,7 +312,10 @@ class GameState {
     winner = newBoard.checkForWin();
     newBoard.upgradeThreeInARows();
 
-    return GameState(newBoard, newBoard.playerOne, newBoard.playerTwo, playerOneTurn, winner);
+    GameState result = GameState(newBoard, newBoard.playerOne, newBoard.playerTwo, playerOneTurn, winner);
+    result.updateValues();
+
+    return result;
   }
 
   void conform(GameState gameState) {
@@ -323,6 +324,7 @@ class GameState {
     playerTwo = gameState.playerTwo;
     playerOneTurn = gameState.playerOneTurn;
     winner = gameState.winner;
+    updateActivePlayer();
   }
 
   GameState clone() {

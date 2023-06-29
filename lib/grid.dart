@@ -1,4 +1,3 @@
-import 'package:boop/player.dart';
 import 'package:flutter/material.dart';
 import 'game_state.dart';
 // import 'kittens_and_cats.dart';
@@ -32,8 +31,6 @@ class _GridState extends State<Grid> {
       return Center(child: Text('${widget.gameState.winner} wins!'));
     }
 
-    Player activePlayer = widget.gameState.playerOneTurn ? widget.gameState.playerOne : widget.gameState.playerTwo;
-
     return GridView.builder(
       itemCount: 36,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -61,9 +58,9 @@ class _GridState extends State<Grid> {
               throw Exception('All out of pieces to place!');
             }
             if (value == 'Kitten') {
-              widget.gameState.board.boopKitten(row, column, activePlayer, widget.gameState.winner);
+              widget.gameState.board.boopKitten(row, column, widget.gameState.activePlayer, widget.gameState.winner);
             } else if (value == 'Cat') {
-              widget.gameState.board.boopCat(row, column, activePlayer, widget.gameState.winner);
+              widget.gameState.board.boopCat(row, column, widget.gameState.activePlayer, widget.gameState.winner);
             }
             isDragOver[row][column] = true;
 
