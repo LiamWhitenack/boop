@@ -27,9 +27,9 @@ class _GridState extends State<Grid> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.gameState.winner != null) {
-      return Center(child: Text('${widget.gameState.winner} wins!'));
-    }
+    // if (widget.gameState.board.winner != null) {
+    //   return Center(child: Text('${widget.gameState.board.winner} wins!'));
+    // }
 
     return GridView.builder(
       itemCount: 36,
@@ -58,14 +58,15 @@ class _GridState extends State<Grid> {
               throw Exception('All out of pieces to place!');
             }
             if (value == 'Kitten') {
-              widget.gameState.board.boopKitten(row, column, widget.gameState.activePlayer, widget.gameState.winner);
+              widget.gameState.board.boopKitten(row, column, widget.gameState.activePlayer);
             } else if (value == 'Cat') {
-              widget.gameState.board.boopCat(row, column, widget.gameState.activePlayer, widget.gameState.winner);
+              widget.gameState.board.boopCat(row, column, widget.gameState.activePlayer);
             }
             isDragOver[row][column] = true;
 
             // testing only
-            // widget.gameState.board.setUpPlayerForWinning(widget.gameState.playerOne);
+            // widget.gameState.board.setUpPlayerForWinningVTwo(widget.gameState.playerOne);
+            // widget.gameState.board.setUpPlayerForWinning(widget.gameState.playerTwo);
             // widget.board.setUpPlayerForScoring(widget.playerOne);
 
             widget.refreshMyGamePageState();

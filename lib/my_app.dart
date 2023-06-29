@@ -32,16 +32,10 @@ class _MyAppState extends State<MyApp> {
 
   void loadGameState(GameState gameState) {
     widget.gameState.conform(gameState);
-    widget.gameState.winner = widget.gameState.board.checkForWin();
     setState(() {});
   }
 
   void confirmMove() {
-    // this will usually return null, otherwise winning player's name
-    widget.gameState.winner = widget.gameState.board.checkForWin();
-    if (widget.gameState.winner != null) {
-      return;
-    }
     alternatePlayerOneTurnAgainstIntelligentAI();
   }
 
@@ -59,24 +53,33 @@ class _MyAppState extends State<MyApp> {
       if (otherPlayer.kittens.isEmpty && otherPlayer.cats.isEmpty) {
         return;
       }
+      if (widget.gameState.board.winner != null) {
+        widget.gameState.gameOver = true;
+        setState(() {});
+        return;
+      }
       widget.gameState.playerOneTurn = !widget.gameState.playerOneTurn;
       widget.gameState.updateActivePlayer();
       if (otherPlayer.automaticallyTakeTurns) {
-        future = widget.gameState.generateAllFuturePossibilites(widget.gameState)[5];
+        future = widget.gameState.generateAllFuturePossibilites(widget.gameState)[0];
 
         loadGameState(future);
         addGameStateToList();
-        setState(() {});
       }
     }
+    if (widget.gameState.board.winner != null) {
+      widget.gameState.gameOver = true;
+    }
+    setState(() {});
   }
 
   void startOver() {
+    widget.gameState.gameOver = false;
     widget.gameState.board.reset();
     widget.gameState.playerOne.reset();
     widget.gameState.playerTwo.reset();
-    widget.gameState.winner = null;
     widget.gameState.playerOneTurn = true;
+    widget.gameState.updateActivePlayer();
     setState(() {});
   }
 
@@ -94,13 +97,13 @@ class _MyAppState extends State<MyApp> {
           fontFamily: "Permanent-Marker"),
       home: Scaffold(
         body: MyGamePage(
-          title: widget.gameState.winner == null ? "$playerTurn's Turn" : 'Game Over',
+          title: widget.gameState.board.winner == null ? "$playerTurn's Turn" : 'Game Over',
           gameState: widget.gameState,
           alternatePlayerOneTurn: alternatePlayerOneTurnAgainstIntelligentAI,
           startOver: startOver,
           loadGameState: loadGameState,
         ),
-        floatingActionButton: widget.gameState.winner == null
+        floatingActionButton: widget.gameState.board.winner == null
             ? FloatingActionButton(
                 backgroundColor: Colors.blue.shade400,
                 onPressed: confirmMove,

@@ -8,20 +8,16 @@ import 'board.dart';
 // import 'package:flutter/material.dart';
 
 String? takeTurn(Board board, Player player1, String pieceType, int row, int column) {
-  String? winner;
-
   if (pieceType == 'Cat') {
-    board.boopCat(row, column, player1, winner);
+    board.boopCat(row, column, player1);
   } else {
-    board.boopKitten(row, column, player1, winner);
+    board.boopKitten(row, column, player1);
   }
 
   board.updateGrid();
 
-  if (board.checkForWin() != null) {
-    return player1.name;
-  }
-  if (board.checkForWin() != null) {
+  board.checkForWin();
+  if (board.winner != null) {
     return player1.name;
   }
 

@@ -24,14 +24,13 @@ class GameState {
 
   bool playerOneTurn;
 
-  String? winner;
+  bool gameOver = false;
 
   GameState(
     this.board,
     this.playerOne,
     this.playerTwo,
     this.playerOneTurn,
-    this.winner,
   ) {
     // updateScore();
     updateActivePlayer();
@@ -195,10 +194,10 @@ class GameState {
     double score = 0.0;
 
     // winner = board.checkForWin();
-    if (winner == activePlayer.name) {
+    if (board.winner == activePlayer.name) {
       score = score + 9999;
     }
-    if (winner == otherPlayer.name) {
+    if (board.winner == otherPlayer.name) {
       score = score - 9999;
     }
 
@@ -217,6 +216,7 @@ class GameState {
         if (activePlayer.tempCats.isNotEmpty) {
           GameState catGameState = generateFutureGameStateWithCat(row, column);
           catGameState.updateScore();
+          catGameState.updateValues();
           catGameState.playerOneTurn = !catGameState.playerOneTurn;
           catGameState.updateActivePlayer();
           result.add(catGameState);
@@ -224,6 +224,7 @@ class GameState {
         if (activePlayer.tempKittens.isNotEmpty) {
           GameState kittenGameState = generateFutureGameStateWithKitten(row, column);
           kittenGameState.updateScore();
+          kittenGameState.updateValues();
           kittenGameState.playerOneTurn = !kittenGameState.playerOneTurn;
           kittenGameState.updateActivePlayer();
           result.add(kittenGameState);
@@ -269,11 +270,10 @@ class GameState {
     newBoard.tempGrid[row][column] = Cat(tempActivePlayer);
 
     newBoard.updateColorMatrix();
-    winner = newBoard.checkForWin();
+    newBoard.checkForWin();
     newBoard.upgradeThreeInARows();
 
-    GameState result = GameState(newBoard, newBoard.playerOne, newBoard.playerTwo, playerOneTurn, winner);
-    result.updateValues();
+    GameState result = GameState(newBoard, newBoard.playerOne, newBoard.playerTwo, playerOneTurn);
 
     return result;
   }
@@ -309,11 +309,10 @@ class GameState {
     newBoard.tempGrid[row][column] = Kitten(tempActivePlayer);
 
     newBoard.updateColorMatrix();
-    winner = newBoard.checkForWin();
+    newBoard.checkForWin();
     newBoard.upgradeThreeInARows();
 
-    GameState result = GameState(newBoard, newBoard.playerOne, newBoard.playerTwo, playerOneTurn, winner);
-    result.updateValues();
+    GameState result = GameState(newBoard, newBoard.playerOne, newBoard.playerTwo, playerOneTurn);
 
     return result;
   }
@@ -323,7 +322,6 @@ class GameState {
     playerOne = gameState.playerOne;
     playerTwo = gameState.playerTwo;
     playerOneTurn = gameState.playerOneTurn;
-    winner = gameState.winner;
     updateActivePlayer();
   }
 
@@ -335,7 +333,6 @@ class GameState {
       playerOneClone,
       playerTwoClone,
       playerOneTurn,
-      winner,
     );
   }
 }

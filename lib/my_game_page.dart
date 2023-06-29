@@ -47,9 +47,9 @@ class _MyGamePageState extends State<MyGamePage> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.gameState.winner != null) {
+    if (widget.gameState.gameOver) {
       return GameOverScreen(
-        winner: widget.gameState.winner!,
+        winner: widget.gameState.board.winner!,
         startOver: widget.startOver,
       );
     }
@@ -117,7 +117,7 @@ class _MyGamePageState extends State<MyGamePage> {
                           refreshMyGamePageState: refreshMyGamePageState,
                           alternatePlayerOneTurn: widget.alternatePlayerOneTurn,
                           playerOneTurn: widget.gameState.playerOneTurn,
-                          winner: widget.gameState.winner,
+                          winner: widget.gameState.board.winner,
                         ),
                       ),
                     );

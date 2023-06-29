@@ -18,9 +18,22 @@ class Board {
 
   void setUpPlayerForWinning(Player player) {
     // this function is for testing only
-    playerOne.cats = List.filled(8, Cat(playerOne));
+    player.cats = List.filled(8, Cat(player));
     grid[0][0] = Cat(player);
     grid[0][1] = Cat(player);
+    // grid[2][0] = Cat(player);
+    // grid[2][1] = Cat(player);
+    // grid[4][0] = Cat(player);
+    // grid[4][1] = Cat(player);
+    // grid[5][5] = Cat(player);
+    // grid[1][3] = Cat(player);
+  }
+
+  void setUpPlayerForWinningVTwo(Player player) {
+    // this function is for testing only
+    player.cats = List.filled(8, Cat(player));
+    grid[1][0] = Cat(player);
+    grid[1][1] = Cat(player);
     // grid[2][0] = Cat(player);
     // grid[2][1] = Cat(player);
     // grid[4][0] = Cat(player);
@@ -42,6 +55,7 @@ class Board {
     grid = List.generate(6, (row) => List.filled(6, null));
     colorGrid = List.generate(6, (row) => List.filled(6, Colors.blue.shade200));
     tempGrid = deepCopyMatrix(grid);
+    winner = null;
   }
 
   void undoLastBoop() {
@@ -52,7 +66,7 @@ class Board {
     colorGrid = getColorGridFromGrid();
   }
 
-  void boopCat(int row, int column, Player player, String? winner) {
+  void boopCat(int row, int column, Player player) {
     undoLastBoop();
 
     // return if the piece isn't placed on an open spot
@@ -80,15 +94,11 @@ class Board {
     tempGrid[row][column] = Cat(player);
 
     updateColorMatrix();
-    winner = checkForWin();
-    if (winner != null) {
-      return;
-    }
 
     upgradeThreeInARows();
   }
 
-  void boopKitten(int row, int column, Player player, String? winner) {
+  void boopKitten(int row, int column, Player player) {
     undoLastBoop();
 
     // return if the piece isn't placed on an open spot
@@ -117,10 +127,6 @@ class Board {
     tempGrid[row][column] = Kitten(player);
 
     updateColorMatrix();
-    winner = checkForWin();
-    if (winner != null) {
-      return;
-    }
 
     upgradeThreeInARows();
   }
@@ -402,11 +408,12 @@ class Board {
     return false;
   }
 
-  String? checkForWin() {
+  void checkForWin() {
     int numberOfCatsInARow = 0;
     String? winnerFromHavingEightCats = eightCatsOnGrid();
     if (winnerFromHavingEightCats != null) {
-      return winnerFromHavingEightCats;
+      winner = winnerFromHavingEightCats;
+      return;
     }
     List<List<List<int>>> allThreeInARowCoordinates = findAllThreeInARow();
     for (List<List<int>> threeInARowCoordinates in allThreeInARowCoordinates) {
@@ -418,14 +425,16 @@ class Board {
           numberOfCatsInARow++;
         }
         if (numberOfCatsInARow == 3) {
-          return tempGrid[row][column].player.name;
+          winner = tempGrid[row][column].player.name;
+          return;
         }
       }
     }
-    return null;
   }
 
   void upgradeThreeInARows() {
+    checkForWin();
+    if (winner != null) return;
     List<List<List<int>>> allThreeInARowCoordinates = findAllThreeInARow();
     for (List<List<int>> threeInARowCoordinates in allThreeInARowCoordinates) {
       for (List<int> coordinates in threeInARowCoordinates) {
