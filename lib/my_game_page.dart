@@ -57,6 +57,7 @@ class _MyGamePageState extends State<MyGamePage> {
     final double screenHeight = MediaQuery.of(context).size.height;
     final double limitingSize = screenHeight > screenWidth ? screenWidth : screenHeight;
     final double gridLength = limitingSize == screenWidth ? screenWidth * 0.95 : limitingSize * 0.65;
+    String soloOrMultiplayer = widget.gameState.playerTwo.automaticallyTakeTurns ? 'vs a Friend' : 'Solo';
 
     return Scaffold(
       appBar: AppBar(
@@ -73,7 +74,7 @@ class _MyGamePageState extends State<MyGamePage> {
           child: SizedBox(
             width: 200,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.start,
               // padding: const EdgeInsets.symmetric(horizontal: 15.0),
               children: [
                 TextField(
@@ -81,8 +82,9 @@ class _MyGamePageState extends State<MyGamePage> {
                   controller: playerOneNameEditingController,
                   onChanged: (value) {
                     widget.gameState.playerOne.name = playerOneNameEditingController.text;
+                    refreshMyGamePageState();
                   },
-                  onEditingComplete: () => refreshMyGamePageState(),
+                  maxLength: 15,
                 ),
                 // TextField()
 
@@ -93,19 +95,20 @@ class _MyGamePageState extends State<MyGamePage> {
                     widget.gameState.playerTwo.name = playerTwoNameEditingController.text;
                     refreshMyGamePageState();
                   },
+                  maxLength: 15,
                 ),
 
                 ListTile(
-                  title: const Center(child: Text('Start Over')),
+                  title: Text('Play $soloOrMultiplayer'),
                   onTap: () {
-                    widget.startOver();
-                    refreshMyGamePageState();
-                    Navigator.pop(context);
+                    widget.gameState.playerTwo.automaticallyTakeTurns =
+                        !widget.gameState.playerTwo.automaticallyTakeTurns;
+                    setState(() {});
                   },
                 ),
 
                 ListTile(
-                  title: const Text('View GameStates'),
+                  title: const Text('View Futures'),
                   onTap: () {
                     List<GameState> allFutureGameStates =
                         widget.gameState.generateAllFuturePossibilites(widget.gameState);
@@ -121,6 +124,15 @@ class _MyGamePageState extends State<MyGamePage> {
                         ),
                       ),
                     );
+                  },
+                ),
+
+                ListTile(
+                  title: const Text('Start Over'),
+                  onTap: () {
+                    widget.startOver();
+                    refreshMyGamePageState();
+                    Navigator.pop(context);
                   },
                 ),
               ],

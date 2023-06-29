@@ -34,8 +34,8 @@ String? takeTurn(Board board, Player player1, String pieceType, int row, int col
 }
 
 void playGame() {
-  Player ralph = Player('Ralph', Colors.orange);
-  Player jack = Player('Jack', Colors.orange);
+  Player ralph = Player('Tim', Colors.orange);
+  Player jack = Player('The Bad Guy', Colors.orange);
 
   Board board = Board(ralph, jack);
 
