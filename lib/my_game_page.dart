@@ -14,12 +14,20 @@ class MyGamePage extends StatefulWidget {
     required this.alternatePlayerOneTurn,
     required this.startOver,
     required this.loadGameState,
+    required this.confirmMove,
+    required this.changeGameStateIndex,
+    required this.previousGameStates,
+    required this.gameStateIndex,
   });
   final String title;
   final GameState gameState;
   final Function alternatePlayerOneTurn;
   final Function startOver;
   final Function loadGameState;
+  final Function confirmMove;
+  final Function changeGameStateIndex;
+  final List<GameState> previousGameStates;
+  final int gameStateIndex;
 
   @override
   State<MyGamePage> createState() => _MyGamePageState();
@@ -252,6 +260,67 @@ class _MyGamePageState extends State<MyGamePage> {
             ],
           ),
         ),
+      ),
+      floatingActionButton: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              const SizedBox(width: 20),
+              SizedBox(
+                width: 180,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    // widget.gameStateIndex != 0
+                    false
+                        ? FloatingActionButton(
+                            backgroundColor: Colors.blue.shade400,
+                            onPressed: () {
+                              widget.changeGameStateIndex(-1);
+                              widget.loadGameState(widget.previousGameStates[widget.gameStateIndex]);
+                            },
+                            child: const Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                              size: 40.0,
+                            ),
+                          )
+                        : const SizedBox(),
+                    // widget.gameStateIndex != widget.previousGameStates.length - 1
+                    false
+                        ? FloatingActionButton(
+                            backgroundColor: Colors.blue.shade400,
+                            onPressed: () {
+                              widget.changeGameStateIndex(1);
+                              widget.loadGameState(widget.previousGameStates[widget.gameStateIndex]);
+                            },
+                            child: const Icon(
+                              Icons.arrow_forward,
+                              color: Colors.white,
+                              size: 40.0,
+                            ),
+                          )
+                        : const SizedBox(),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          widget.gameState.board.winner == null
+              ? FloatingActionButton(
+                  backgroundColor: Colors.blue.shade400,
+                  onPressed: () {
+                    widget.confirmMove();
+                  },
+                  child: const Icon(
+                    Icons.check,
+                    color: Colors.white,
+                    size: 40.0,
+                  ),
+                )
+              : const SizedBox(),
+        ],
       ),
     );
   }

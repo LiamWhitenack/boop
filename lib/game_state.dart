@@ -327,7 +327,7 @@ class GameState {
 
   GameState clone() {
     Player playerOneClone = playerOne.clone();
-    Player playerTwoClone = playerOne.clone();
+    Player playerTwoClone = playerTwo.clone();
     return GameState(
       board.clone(playerOneClone, playerTwoClone),
       playerOneClone,

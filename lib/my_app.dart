@@ -30,6 +30,10 @@ class _MyAppState extends State<MyApp> {
     gameStateIndex++;
   }
 
+  void changeGameStateIndex(int changeBy) {
+    gameStateIndex = gameStateIndex + changeBy;
+  }
+
   void loadGameState(GameState gameState) {
     widget.gameState.conform(gameState);
     setState(() {});
@@ -64,7 +68,7 @@ class _MyAppState extends State<MyApp> {
         future = widget.gameState.generateAllFuturePossibilites(widget.gameState)[0];
 
         loadGameState(future);
-        addGameStateToList();
+        // addGameStateToList();
       }
     }
     if (widget.gameState.board.winner != null) {
@@ -102,18 +106,11 @@ class _MyAppState extends State<MyApp> {
           alternatePlayerOneTurn: alternatePlayerOneTurnAgainstIntelligentAI,
           startOver: startOver,
           loadGameState: loadGameState,
+          confirmMove: confirmMove,
+          changeGameStateIndex: changeGameStateIndex,
+          previousGameStates: previousGameStates,
+          gameStateIndex: gameStateIndex,
         ),
-        floatingActionButton: widget.gameState.board.winner == null
-            ? FloatingActionButton(
-                backgroundColor: Colors.blue.shade400,
-                onPressed: confirmMove,
-                child: const Icon(
-                  Icons.check,
-                  color: Colors.white,
-                  size: 40.0,
-                ),
-              )
-            : null,
       ),
     );
   }
