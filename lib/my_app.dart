@@ -40,20 +40,23 @@ class _MyAppState extends State<MyApp> {
   }
 
   void confirmMove() {
-    alternatePlayerOneTurnAgainstIntelligentAI();
+    previousGameStates.removeRange(gameStateIndex + 1, previousGameStates.length);
+
+    confirmMoveAndalternateTurn();
+    takeTurnIfOpponentIsAI();
+    addGameStateToList();
+    setState(() {});
   }
 
   // ===========================================================================
   // =========================== IN PROGRESS ===================================
-  void alternatePlayerOneTurnAgainstIntelligentAI() {
-    Player otherPlayer;
-    GameState future;
-    otherPlayer = widget.gameState.playerOneTurn ? widget.gameState.playerTwo : widget.gameState.playerOne;
+  void confirmMoveAndalternateTurn() {
+    Player otherPlayer = widget.gameState.playerOneTurn ? widget.gameState.playerTwo : widget.gameState.playerOne;
     if (widget.gameState.board.boardChanged()) {
       widget.gameState.board.updateGrid();
       widget.gameState.board.playerOne.updateKittensAndCats();
       widget.gameState.board.playerTwo.updateKittensAndCats();
-      addGameStateToList();
+
       if (otherPlayer.kittens.isEmpty && otherPlayer.cats.isEmpty) {
         return;
       }
@@ -64,17 +67,27 @@ class _MyAppState extends State<MyApp> {
       }
       widget.gameState.playerOneTurn = !widget.gameState.playerOneTurn;
       widget.gameState.updateActivePlayer();
-      if (otherPlayer.automaticallyTakeTurns) {
-        future = widget.gameState.generateAllFuturePossibilites(widget.gameState)[0];
-
-        loadGameState(future);
-        // addGameStateToList();
-      }
     }
     if (widget.gameState.board.winner != null) {
       widget.gameState.gameOver = true;
     }
-    setState(() {});
+  }
+
+  void takeTurnIfOpponentIsAI() {
+    GameState future;
+    Player activePlayer = widget.gameState.playerOneTurn ? widget.gameState.playerOne : widget.gameState.playerTwo;
+    if (activePlayer.automaticallyTakeTurns) {
+      future = widget.gameState.generateAllFuturePossibilites(widget.gameState)[0];
+      future.board.updateGrid();
+      future.board.playerOne.updateKittensAndCats();
+      future.board.playerTwo.updateKittensAndCats();
+
+      loadGameState(future);
+      // addGameStateToList();
+      if (widget.gameState.board.winner != null) {
+        widget.gameState.gameOver = true;
+      }
+    }
   }
 
   void startOver() {
@@ -84,6 +97,8 @@ class _MyAppState extends State<MyApp> {
     widget.gameState.playerTwo.reset();
     widget.gameState.playerOneTurn = true;
     widget.gameState.updateActivePlayer();
+    previousGameStates = [widget.gameState.clone()];
+    gameStateIndex = 0;
     setState(() {});
   }
 
@@ -103,7 +118,7 @@ class _MyAppState extends State<MyApp> {
         body: MyGamePage(
           title: widget.gameState.board.winner == null ? "$playerTurn's Turn" : 'Game Over',
           gameState: widget.gameState,
-          alternatePlayerOneTurn: alternatePlayerOneTurnAgainstIntelligentAI,
+          alternatePlayerOneTurn: confirmMoveAndalternateTurn,
           startOver: startOver,
           loadGameState: loadGameState,
           confirmMove: confirmMove,

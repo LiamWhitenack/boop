@@ -63,7 +63,7 @@ class GameState {
     for (int row = 0; row < 6; row++) {
       for (int column = 0; column < 6; column++) {
         if (board.tempGrid[row][column] != null) {
-          score = score + scoreAffectFromPosition(activePlayer, row, column);
+          score = score + 0.67 * scoreAffectFromPosition(activePlayer, row, column);
         }
       }
     }
@@ -157,6 +157,8 @@ class GameState {
     // Check diagonals (top-left to bottom-right)
     for (int row = 0; row < 5; row++) {
       for (int column = 0; column < 5; column++) {
+        if (row == 0 && column == 4) continue;
+        if (row == 4 && column == 0) continue;
         if (board.tempGrid[row][column] == null) continue;
         if (board.tempGrid[row + 1][column + 1] == null) continue;
         tempPlayer = board.tempGrid[row][column].player;
@@ -169,6 +171,8 @@ class GameState {
     // Check diagonals (top-right to bottom-left)
     for (int row = 0; row < 4; row++) {
       for (int column = 1; column < 6; column++) {
+        if (row == 5 && column == 4) continue;
+        if (row == 1 && column == 0) continue;
         if (board.tempGrid[row][column] == null) continue;
         if (board.tempGrid[row + 1][column - 1] == null) continue;
         tempPlayer = board.tempGrid[row][column].player;
@@ -177,15 +181,15 @@ class GameState {
         }
       }
     }
-    return 2 * (counts[activePlayer]! - counts[otherPlayer]!);
+    return 3 * (counts[activePlayer]! - counts[otherPlayer]!);
   }
 
   double scorePieceIncrease() {
     double score = 0.0;
-    score = score + 3 * (activePlayer.tempCats.length - activePlayer.cats.length);
-    score = score - 3 * (otherPlayer.tempCats.length - otherPlayer.cats.length);
-    score = score + (activePlayer.tempKittens.length - activePlayer.kittens.length);
-    score = score - (otherPlayer.tempKittens.length - otherPlayer.kittens.length);
+    score = score + 5 * (activePlayer.tempCats.length - activePlayer.cats.length);
+    score = score - 5 * (otherPlayer.tempCats.length - otherPlayer.cats.length);
+    score = score + 1.5 * (activePlayer.tempKittens.length - activePlayer.kittens.length);
+    score = score - 1.5 * (otherPlayer.tempKittens.length - otherPlayer.kittens.length);
 
     return score;
   }
@@ -318,20 +322,19 @@ class GameState {
   }
 
   void conform(GameState gameState) {
-    board = gameState.board;
-    playerOne = gameState.playerOne;
-    playerTwo = gameState.playerTwo;
+    board = gameState.board.clone(gameState.playerOne, gameState.playerTwo);
+    playerOne = board.playerOne;
+    playerTwo = board.playerTwo;
     playerOneTurn = gameState.playerOneTurn;
     updateActivePlayer();
   }
 
   GameState clone() {
-    Player playerOneClone = playerOne.clone();
-    Player playerTwoClone = playerTwo.clone();
+    Board newBoard = board.clone(playerOne, playerTwo);
     return GameState(
-      board.clone(playerOneClone, playerTwoClone),
-      playerOneClone,
-      playerTwoClone,
+      newBoard,
+      newBoard.playerOne,
+      newBoard.playerTwo,
       playerOneTurn,
     );
   }
