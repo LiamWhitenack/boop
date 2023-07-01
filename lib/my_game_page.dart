@@ -272,8 +272,8 @@ class _MyGamePageState extends State<MyGamePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    // widget.gameStateIndex != 0
-                    false
+                    widget.gameStateIndex != 0
+                        // false
                         ? FloatingActionButton(
                             backgroundColor: Colors.blue.shade400,
                             onPressed: () {
@@ -287,8 +287,8 @@ class _MyGamePageState extends State<MyGamePage> {
                             ),
                           )
                         : const SizedBox(),
-                    // widget.gameStateIndex != widget.previousGameStates.length - 1
-                    false
+                    widget.gameStateIndex != widget.previousGameStates.length - 1
+                        // false
                         ? FloatingActionButton(
                             backgroundColor: Colors.blue.shade400,
                             onPressed: () {
